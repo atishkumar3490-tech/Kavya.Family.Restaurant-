@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta name="theme-color" content="#050505">
+    <title>Admin Dashboard - Kavya Restaurant</title>
+    <link rel="manifest" href="admin-manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+        :root { --gold:#d4af37; --red:#e23744; --neon:#39ff14; --blue:#00c6ff; --card:#111; --line:#222; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
+        body { background: #050505; color: #fff; padding-bottom: 90px; }
+        .hidden { display: none !important; }
+
+        /* LOGIN + LOCK */
+        .gate { position: fixed; inset: 0; background: #0a0a0a; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        #login-screen { z-index: 9999; }
+        #lock-screen { z-index: 9000; background: rgba(5,5,5,0.97); }
+        .pin-box { background: #111; padding: 30px; border-radius: 20px; border: 1px solid #333; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .pin-input, .text-input { width: 100%; padding: 14px; font-size: 16px; border-radius: 12px; border: 1px solid #333; background: #000; color: #fff; font-weight: 700; margin-bottom: 14px; outline: none; }
+        .text-input:focus { border-color: var(--gold); }
+        .pin-input { font-size: 24px; text-align: center; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; letter-spacing: 10px; }
+        .login-btn { background: var(--gold); color: #000; font-weight: 900; font-size: 18px; padding: 15px; border: none; border-radius: 12px; width: 100%; cursor: pointer; }
+        .login-btn:disabled { opacity: .5; }
+        .login-msg { min-height: 20px; font-size: 13px; font-weight: 700; color: #ff6b6b; margin-bottom: 12px; }
+        .stay { display: flex; align-items: center; gap: 8px; color: #aaa; font-size: 13px; margin: -4px 0 14px; text-align: left; }
+
+        /* HEADER */
+        header { background: #111; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 100; gap: 8px; }
+        .brand { font-size: 19px; font-weight: 900; color: #fff; white-space: nowrap; }
+        .brand span { color: var(--gold); }
+        .hdr-right { display: flex; align-items: center; gap: 10px; }
+        .icon-btn { background: transparent; border: none; color: #aaa; font-size: 18px; cursor: pointer; padding: 4px 6px; }
+        .icon-btn.danger { color: var(--red); }
+        .pill { border: 1px solid #333; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 900; cursor: pointer; background: #1a1a1a; color: #fff; }
+        .pill.open { border-color: var(--neon); color: var(--neon); }
+        .pill.closed { border-color: var(--red); color: var(--red); }
+
+        /* TABS */
+        .tabs { display: flex; background: #111; border-bottom: 1px solid var(--line); overflow-x: auto; white-space: nowrap; position: sticky; top: 54px; z-index: 99; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { flex: 0 0 auto; padding: 13px 16px; text-align: center; font-weight: 800; color: #888; background: transparent; border: none; font-size: 14px; cursor: pointer; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .count-badge { background: var(--red); color: #fff; padding: 2px 6px; border-radius: 10px; font-size: 10px; margin-left: 4px; }
+
+        /* TOOLBAR */
+        .toolbar { display: flex; gap: 8px; padding: 12px 15px 0; flex-wrap: wrap; align-items: center; }
+        .toolbar .text-input { margin: 0; flex: 1 1 160px; padding: 10px 12px; font-size: 14px; }
+        .chip { background: #1a1a1a; color: #aaa; border: 1px solid #333; border-radius: 20px; padding: 8px 14px; font-size: 12px; font-weight: 800; cursor: pointer; }
+        .chip.active { background: var(--gold); color: #000; border-color: var(--gold); }
+
+        /* CARDS */
+        .admin-card { background: var(--card); margin: 15px; border-radius: 16px; border: 1px solid #333; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .admin-card.dine { border-color: var(--gold); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #333; padding-bottom: 10px; margin-bottom: 10px; gap: 8px; }
+        .order-id { font-size: 16px; font-weight: 900; color: var(--gold); }
+        .time-badge { font-size: 11px; background: #222; padding: 4px 8px; border-radius: 6px; color: #aaa; white-space: nowrap; }
+        .table-banner { background: var(--gold); color: #000; font-size: 22px; font-weight: 900; text-align: center; border-radius: 10px; padding: 8px; margin-bottom: 12px; letter-spacing: 1px; }
+        .del-banner { background: rgba(0,198,255,.1); color: var(--blue); border: 1px solid var(--blue); font-size: 12px; font-weight: 900; text-align: center; border-radius: 10px; padding: 5px; margin-bottom: 12px; }
+        .flags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+        .flag { font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: #222; color: #ccc; }
+        .flag.warn { background: rgba(226,55,68,.18); color: #ff6b6b; border: 1px solid var(--red); }
+        .flag.info { background: rgba(0,198,255,.12); color: var(--blue); }
+        .flag-detail { font-size: 11px; color: #ff9b9b; margin: -4px 0 10px; line-height: 1.5; }
+
+        .customer-info { margin-bottom: 15px; }
+        .c-name { font-size: 18px; font-weight: 800; color: #fff; }
+        .c-phone { font-size: 14px; color: #aaa; margin-top: 2px; }
+        .c-phone a { color: #aaa; text-decoration: none; }
+        .c-gps { font-size: 13px; color: var(--blue); margin-top: 5px; font-weight: 700; text-decoration: none; display: inline-block; }
+        .c-address { font-size: 12px; color: #888; margin-top: 4px; line-height: 1.4; background: #0a0a0a; padding: 8px; border-radius: 8px; border: 1px solid var(--line); }
+
+        .item-list { background: #0a0a0a; padding: 10px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 15px; }
+        .item-row { display: flex; justify-content: space-between; font-size: 14px; color: #ddd; margin-bottom: 5px; font-weight: 600; }
+        .item-meta { font-size: 11px; color: #777; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+        .item-meta:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+        .finance-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; }
+        .total-amt { font-size: 20px; font-weight: 900; color: var(--neon); }
+        .pay-method { font-size: 12px; font-weight: 800; padding: 4px 8px; border-radius: 4px; }
+        .pay-cod { background: #333; color: #fff; }
+        .pay-upi { background: rgba(226,55,68,0.2); color: var(--red); border: 1px solid var(--red); }
+
+        .prep-row { display: flex; gap: 6px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+        .prep-row span { font-size: 12px; color: #888; font-weight: 700; margin-right: 2px; }
+        .prep-btn { background: #1a1a1a; color: #aaa; border: 1px solid #333; border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 800; cursor: pointer; }
+        .prep-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
+
+        .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn { flex: 1; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 13px; border: none; cursor: pointer; text-align: center; min-width: 120px; }
+        .btn:disabled { opacity: .5; }
+        .btn-whatsapp { background: #25D366; color: #000; flex-basis: 100%; }
+        .btn-status { background: var(--gold); color: #000; }
+        .btn-paid { background: var(--neon); color: #000; }
+        .btn-outline { background: transparent; border: 1px solid #555; color: #fff; }
+        .btn-danger { background: transparent; border: 1px solid var(--red); color: var(--red); }
+        .btn-kot { background: #1f2937; color: #fff; border: 1px solid #374151; }
+        .note-input { width: 100%; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; padding: 10px; font-size: 13px; margin-bottom: 10px; }
+
+        .empty { text-align: center; color: #888; margin-top: 50px; padding: 0 20px; }
+        .empty i { font-size: 40px; margin-bottom: 15px; color: #333; display: block; }
+
+        /* TABLE VIEW */
+        .table-total { font-size: 22px; font-weight: 900; color: var(--neon); }
+
+        /* HISTORY */
+        .hist-row { display: flex; justify-content: space-between; gap: 10px; padding: 12px 15px; border-bottom: 1px solid var(--line); font-size: 13px; }
+        .hist-row b { color: #fff; }
+        .hist-row small { color: #888; display: block; margin-top: 2px; }
+        .hist-status { font-size: 11px; font-weight: 800; }
+        .hist-status.ok { color: var(--neon); }
+        .hist-status.bad { color: var(--red); }
+        .summary-line { padding: 12px 15px; color: #aaa; font-size: 13px; font-weight: 700; }
+
+        /* DASHBOARD */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
+        .stat { background: var(--card); border: 1px solid #333; border-radius: 14px; padding: 14px; }
+        .stat small { color: #888; font-weight: 700; font-size: 12px; }
+        .stat b { display: block; font-size: 22px; margin-top: 4px; color: #fff; }
+        .stat b.gold { color: var(--gold); }
+        .panel { background: var(--card); border: 1px solid #333; border-radius: 14px; margin: 0 15px 15px; padding: 14px; }
+        .panel h4 { color: var(--gold); margin-bottom: 12px; font-size: 14px; }
+        .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; }
+        .bar-row .nm { flex: 0 0 42%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #ddd; font-weight: 700; }
+        .bar-row .bar { flex: 1; background: #1a1a1a; border-radius: 6px; height: 10px; overflow: hidden; }
+        .bar-row .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--gold), #ffd700); }
+        .bar-row .qt { flex: 0 0 34px; text-align: right; color: #fff; font-weight: 800; }
+
+        /* MENU + SETTINGS */
+        .menu-cat { padding: 10px 15px 4px; color: var(--gold); font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+        .menu-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 15px; border-bottom: 1px solid var(--line); gap: 10px; }
+        .menu-row.sold .nm { color: #666; text-decoration: line-through; }
+        .menu-row .nm { font-weight: 700; font-size: 14px; }
+        .menu-row small { color: #888; display: block; }
+        .switch { position: relative; width: 46px; height: 26px; flex: 0 0 46px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .switch span { position: absolute; inset: 0; background: #333; border-radius: 26px; transition: .2s; cursor: pointer; }
+        .switch span::before { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+        .switch input:checked + span { background: var(--red); }
+        .switch.green input:checked + span { background: #1faa59; }
+        .switch input:checked + span::before { transform: translateX(20px); }
+        .set-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .set-grid label, .panel label.lbl { display: block; font-size: 12px; color: #888; font-weight: 700; margin-bottom: 4px; }
+        .set-grid .text-input, .panel .text-input { margin-bottom: 8px; }
+        .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .tag { background: #1a1a1a; border: 1px solid #333; border-radius: 16px; padding: 5px 10px; font-size: 12px; font-weight: 700; }
+        .tag button { background: none; border: none; color: var(--red); margin-left: 6px; cursor: pointer; font-weight: 900; }
+        .row-between { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .row-between p { font-size: 13px; color: #ccc; font-weight: 700; }
+        .row-between small { color: #777; display: block; font-weight: 600; }
+
+        /* ALARM + TOAST */
+        #alarm-banner { display: none; background: var(--red); color: #fff; padding: 15px; text-align: center; font-weight: 900; position: fixed; bottom: 0; width: 100%; z-index: 9500; box-shadow: 0 -5px 20px rgba(226,55,68,0.5); cursor: pointer; }
+        #toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-30px); background: #1a1a1a; border: 1px solid #444; color: #fff; padding: 12px 20px; border-radius: 30px; font-weight: 800; font-size: 13px; z-index: 9800; opacity: 0; pointer-events: none; transition: .3s; max-width: 90%; text-align: center; }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        #toast.err { border-color: var(--red); color: #ff8a8a; }
+    </style>
+</head>
+<body>
+
+    <!-- 🔊 LOUD ALARM SOUND FOR NEW ORDERS -->
+    <audio id="order-alarm" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" loop preload="auto"></audio>
+
+    <div id="toast"></div>
+
+    <!-- 🔐 LOGIN SCREEN -->
+    <div id="login-screen" class="gate">
+        <h1 class="brand" style="font-size: 32px; margin-bottom: 10px;">KAVYA <span>ADMIN</span></h1>
+        <p style="color: #888; font-size: 14px; margin-bottom: 30px;">Authorized Personnel Only</p>
+        <div class="pin-box">
+            <!-- Email + password mode -->
+            <div id="login-email-box" class="hidden">
+                <h3 style="color:#fff; margin-bottom:20px;">Admin Login</h3>
+                <input type="email" id="admin-email" class="text-input" placeholder="Admin email" autocomplete="username">
+                <input type="password" id="admin-pass" class="text-input" placeholder="Password" autocomplete="current-password">
+                <label class="stay"><input type="checkbox" id="stay-signed" checked> Keep me signed in on this device</label>
+            </div>
+            <!-- PIN mode (fallback) -->
+            <div id="login-pin-box" class="hidden">
+                <h3 style="color:#fff; margin-bottom:20px;">Enter Access PIN</h3>
+                <input type="password" id="admin-pin" class="pin-input" maxlength="4" inputmode="numeric" placeholder="••••" autocomplete="off">
+            </div>
+            <div class="login-msg" id="login-msg"></div>
+            <button class="login-btn" id="login-btn">UNLOCK DASHBOARD <i class="fa-solid fa-lock-open"></i></button>
+        </div>
+    </div>
+
+    <!-- 🔒 AUTO-LOCK SCREEN -->
+    <div id="lock-screen" class="gate hidden">
+        <h2 class="brand" style="margin-bottom:6px;"><i class="fa-solid fa-lock"></i> LOCKED</h2>
+        <p style="color:#888; font-size:13px; margin-bottom:20px;">Locked after inactivity. Orders are still being received.</p>
+        <div class="pin-box">
+            <input type="password" id="unlock-input" class="text-input" placeholder="Enter password" autocomplete="current-password">
+            <div class="login-msg" id="unlock-msg"></div>
+            <button class="login-btn" id="unlock-btn">UNLOCK</button>
+        </div>
+    </div>
+
+    <!-- 📱 MAIN DASHBOARD -->
+    <div id="dashboard-screen" class="hidden">
+        <header>
+            <div class="brand">KAVYA <span>COMMAND</span></div>
+            <div class="hdr-right">
+                <button class="pill" id="store-pill" data-act="toggle-store">…</button>
+                <button class="icon-btn" id="mute-btn" data-act="toggle-mute" title="Alarm sound"><i class="fa-solid fa-volume-high"></i></button>
+                <button class="icon-btn" data-act="lock-now" title="Lock screen"><i class="fa-solid fa-lock"></i></button>
+                <button class="icon-btn danger" data-act="logout" title="Sign out"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </header>
+
+        <nav class="tabs" id="tabs">
+            <button class="tab-btn active" data-tab="orders">Live Orders <span class="count-badge" id="order-badge">0</span></button>
+            <button class="tab-btn" data-tab="tables">Tables <span class="count-badge" id="table-badge">0</span></button>
+            <button class="tab-btn" data-tab="dining">Dining Req <span class="count-badge" id="dining-badge">0</span></button>
+            <button class="tab-btn" data-tab="history">History</button>
+            <button class="tab-btn" data-tab="dashboard">Today</button>
+            <button class="tab-btn" data-tab="menu">Menu</button>
+            <button class="tab-btn" data-tab="settings">Settings</button>
+        </nav>
+
+        <!-- LIVE ORDERS -->
+        <div id="view-orders">
+            <div class="toolbar">
+                <button class="chip active" data-act="filter" data-v="all">All</button>
+                <button class="chip" data-act="filter" data-v="Delivery">🛵 Delivery</button>
+                <button class="chip" data-act="filter" data-v="Dine-in">🪑 Dine-in</button>
+                <input type="search" id="order-search" class="text-input" placeholder="Search order ID, phone, name">
+            </div>
+            <div id="orders-container"></div>
+        </div>
+
+        <!-- TABLES -->
+        <div id="view-tables" class="hidden"><div id="tables-container"></div></div>
+
+        <!-- DINING RESERVATIONS -->
+        <div id="view-dining" class="hidden"><div id="dining-container"></div></div>
+
+        <!-- HISTORY -->
+        <div id="view-history" class="hidden">
+            <div class="toolbar">
+                <input type="date" id="hist-from" class="text-input" style="flex:1 1 130px;">
+                <input type="date" id="hist-to" class="text-input" style="flex:1 1 130px;">
+                <select id="hist-status" class="text-input" style="flex:1 1 120px;">
+                    <option value="all">All</option><option value="Delivered">Delivered / Served</option><option value="Cancelled">Cancelled</option>
+                </select>
+                <input type="search" id="hist-search" class="text-input" placeholder="Search ID, phone, name">
+                <button class="chip active" data-act="export-csv"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+            </div>
+            <div class="summary-line" id="hist-summary"></div>
+            <div id="history-container"></div>
+        </div>
+
+        <!-- TODAY DASHBOARD -->
+        <div id="view-dashboard" class="hidden">
+            <div class="toolbar"><input type="date" id="dash-date" class="text-input" style="max-width:200px;"></div>
+            <div id="dashboard-container"></div>
+        </div>
+
+        <!-- MENU / SOLD OUT -->
+        <div id="view-menu" class="hidden">
+            <div class="toolbar"><input type="search" id="menu-search" class="text-input" placeholder="Search dish"></div>
+            <div class="summary-line" id="menu-summary"></div>
+            <div id="menu-container"></div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="view-settings" class="hidden">
+            <div class="panel" style="margin-top:15px;">
+                <h4><i class="fa-solid fa-store"></i> Restaurant status</h4>
+                <div class="row-between">
+                    <p>Accepting orders<small>When OFF, customers cannot place new orders.</small></p>
+                    <label class="switch green"><input type="checkbox" id="set-open"><span></span></label>
+                </div>
+                <label class="lbl">Message shown when closed</label>
+                <input class="text-input" id="set-closedmsg" maxlength="120" placeholder="We are closed right now. Please order later!">
+            </div>
+
+            <div class="panel">
+                <h4><i class="fa-solid fa-percent"></i> Billing</h4>
+                <div class="set-grid">
+                    <div><label>GST %</label><input class="text-input" id="set-gst" type="number" min="0" max="28" step="0.5"></div>
+                    <div><label>Delivery fee ₹</label><input class="text-input" id="set-fee" type="number" min="0" max="500"></div>
+                    <div><label>Free delivery above ₹</label><input class="text-input" id="set-free" type="number" min="0" max="5000"></div>
+                    <div><label>Default prep time (min)</label><input class="text-input" id="set-prep" type="number" min="5" max="120"></div>
+                </div>
+                <button class="btn btn-status" style="width:100%; margin-top:6px;" data-act="save-store">Save settings</button>
+            </div>
+
+            <div class="panel">
+                <h4><i class="fa-brands fa-whatsapp"></i> Rider &amp; blocked numbers</h4>
+                <label class="lbl">Rider WhatsApp number (10 digits)</label>
+                <input class="text-input" id="set-rider" type="tel" maxlength="12" placeholder="9876543210">
+                <button class="btn btn-outline" style="width:100%;" data-act="save-rider">Save rider number</button>
+                <label class="lbl" style="margin-top:16px;">Block a phone number (flags its orders)</label>
+                <div style="display:flex; gap:8px;"><input class="text-input" id="block-input" type="tel" maxlength="10" placeholder="10-digit number" style="margin:0;"><button class="btn btn-danger" style="flex:0 0 90px; min-width:0;" data-act="add-block">Block</button></div>
+                <div class="tag-list" id="block-list"></div>
+            </div>
+
+            <div class="panel">
+                <h4><i class="fa-solid fa-bell"></i> Alarm &amp; screen</h4>
+                <label class="lbl">Alarm volume</label>
+                <input type="range" id="set-volume" min="0.1" max="1" step="0.1" style="width:100%; margin-bottom:10px;">
+                <div style="display:flex; gap:8px; margin-bottom:14px;">
+                    <button class="btn btn-outline" data-act="test-alarm">🔔 Test alarm</button>
+                    <button class="btn btn-outline" data-act="stop-alarm">Stop</button>
+                </div>
+                <div class="row-between">
+                    <p>Keep screen awake<small>Stops the tablet from sleeping while this page is open.</small></p>
+                    <label class="switch green"><input type="checkbox" id="set-wake"><span></span></label>
+                </div>
+                <label class="lbl">Auto-lock after (minutes, 0 = never)</label>
+                <input class="text-input" id="set-autolock" type="number" min="0" max="120">
+            </div>
+
+            <div class="panel">
+                <h4><i class="fa-solid fa-shield-halved"></i> Security</h4>
+                <p id="sec-info" style="font-size:12px; color:#999; line-height:1.6;"></p>
+                <button class="btn btn-danger" style="width:100%; margin-top:10px;" data-act="logout">Sign out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🚨 NEW ORDER ALARM BANNER -->
+    <div id="alarm-banner" data-act="stop-alarm">
+        <i class="fa-solid fa-bell fa-shake" style="font-size: 24px; margin-right: 10px;"></i>
+        NEW ORDER RECEIVED! TAP TO MUTE
+    </div>
+
+    <!-- Menu data (used for sold-out list + bill check). Same file the customer app uses. -->
+    <script src="data.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, query, orderBy, limit, arrayUnion, arrayRemove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBsP14Fn5iyr_y8KVODcBPxFxPyrSyzAzQ",
+            authDomain: "kavya-rsturant.firebaseapp.com",
+            projectId: "kavya-rsturant",
+            storageBucket: "kavya-rsturant.firebasestorage.app",
+            messagingSenderId: "828437773467",
+            appId: "1:828437773467:web:914fc4b67de7b96d55da3e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // ==========================================
+        // ⚙️ ADMIN CONFIGURATION (EDIT HERE)
+        // ==========================================
+        const ADMIN_CONFIG = {
+            USE_FIREBASE_AUTH: true,   // true = Email + Password login (recommended).  false = old PIN login
+            PIN_SHA256: "fbdf2bdc4b2a45f3508c8ced68098f58375edbf2fe81ec8fe4b113185670939a", // hash of the PIN (only used when USE_FIREBASE_AUTH is false)
+            MAX_ATTEMPTS: 3,           // wrong tries before a temporary lock
+            LOCK_MINUTES: 5,           // how long the lock lasts
+            DEFAULT_AUTOLOCK_MIN: 10,  // screen auto-locks after this many idle minutes (0 = never)
+            COUNTRY_CODE: "91"         // used for rider WhatsApp links
+        };
+
+        // ---------- small helpers ----------
+        const $ = (id) => document.getElementById(id);
+        const ls = {
+            get(k, d = null) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } },
+            set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+        };
+        const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const num = (v) => { const n = Number(v); return Number.isFinite(n) ? n : 0; };
+        const money = (n) => '₹' + num(n).toLocaleString('en-IN');
+        const pad = (n) => String(n).padStart(2, '0');
+        const dayKey = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+        const tsOf = (o) => (o && o.timestamp && typeof o.timestamp.toDate === 'function') ? o.timestamp.toDate() : new Date();
+        const isDine = (o) => o.orderType === 'Dine-in' || (o.tableNumber !== null && o.tableNumber !== undefined && o.tableNumber !== '');
+        const safeUrl = (u) => /^https:\/\/(www\.google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl|goo\.gl\/maps)/i.test(String(u || '')) ? u : null;
+        const SPICE = { Mild: 'Mild 🟢', Medium: 'Medium 🟡', Fire: 'Extra Spicy 🔴' };
+        const spiceLabel = (s) => SPICE[s] || s;
+
+        let toastTimer;
+        function toast(msg, isErr) {
+            const t = $('toast');
+            t.textContent = msg;
+            t.className = 'show' + (isErr ? ' err' : '');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { t.className = ''; }, 2800);
+        }
+
+        function ago(d) {
+            const m = Math.max(0, Math.floor((Date.now() - d.getTime()) / 60000));
+            if (m < 1) return 'just now';
+            if (m < 60) return m + ' min ago';
+            return Math.floor(m / 60) + 'h ' + (m % 60) + 'm ago';
+        }
+
+        async function sha256(text) {
+            if (!window.crypto || !crypto.subtle) throw new Error('insecure');
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+            return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // ---------- state ----------
+        let allOrders = [];
+        let allResv = [];
+        let store = {};       // settings/store (public)
+        let adminCfg = {};    // settings/admin (private)
+        let ordersReady = false;
+        let started = false;
+        let orderFilter = 'all';
+        let permissionShown = false;
+        const alarmed = new Set();
+        const alarmAudio = $('order-alarm');
+
+        // ---------- effective billing settings ----------
+        const cfgNum = (k, d) => (store[k] !== undefined && store[k] !== null) ? num(store[k]) : d;
+        const APP = (typeof APP_CONFIG !== 'undefined') ? APP_CONFIG : {};
+        const gstRate = () => cfgNum('gstRate', APP.gst_rate ?? 0.05);
+        const delFee = () => cfgNum('deliveryFee', APP.delivery_fee ?? 30);
+        const freeAbove = () => cfgNum('freeDeliveryThreshold', APP.free_delivery_threshold ?? 199);
+
+        // ==========================================
+        // 🔐 LOGIN, LOCKOUT, AUTO-LOCK
+        // ==========================================
+        const LOCK_KEY = 'kavya_admin_lock';
+        const readLock = () => { try { return JSON.parse(ls.get(LOCK_KEY, '{}')) || {}; } catch (e) { return {}; } };
+        const lockLeftMs = () => { const l = readLock(); return l.until && l.until > Date.now() ? l.until - Date.now() : 0; };
+        function registerFail() {
+            const l = readLock();
+            const fails = ((l.until && l.until <= Date.now()) ? 0 : (l.fails || 0)) + 1;
+            if (fails >= ADMIN_CONFIG.MAX_ATTEMPTS) { ls.set(LOCK_KEY, JSON.stringify({ fails: 0, until: Date.now() + ADMIN_CONFIG.LOCK_MINUTES * 60000 })); return 0; }
+            ls.set(LOCK_KEY, JSON.stringify({ fails }));
+            return ADMIN_CONFIG.MAX_ATTEMPTS - fails;
+        }
+        const clearFails = () => ls.set(LOCK_KEY, '{}');
+        const lockText = () => `Too many wrong attempts. Try again in ${Math.ceil(lockLeftMs() / 60000)} min.`;
+
+        function authErrorText(e) {
+            const c = (e && e.code) || '';
+            if (c === 'auth/too-many-requests') return 'Too many attempts. Please wait a few minutes.';
+            if (c === 'auth/network-request-failed') return 'No internet connection.';
+            return 'Wrong email or password.';
+        }
+
+        async function doLogin() {
+            const msg = $('login-msg'); const btn = $('login-btn');
+            if (lockLeftMs()) { msg.textContent = lockText(); return; }
+            btn.disabled = true; msg.textContent = '';
+            try {
+                if (ADMIN_CONFIG.USE_FIREBASE_AUTH) {
+                    const email = $('admin-email').value.trim(); const pass = $('admin-pass').value;
+                    if (!email || !pass) { msg.textContent = 'Enter email and password.'; return; }
+                    await setPersistence(auth, $('stay-signed').checked ? browserLocalPersistence : browserSessionPersistence);
+                    await signInWithEmailAndPassword(auth, email, pass);
+                    clearFails();
+                    $('admin-pass').value = '';
+                } else {
+                    const ok = (await sha256($('admin-pin').value)) === ADMIN_CONFIG.PIN_SHA256;
+                    if (!ok) throw { code: 'bad-pin' };
+                    clearFails(); $('admin-pin').value = '';
+                    enterDashboard();
+                }
+            } catch (e) {
+                if (e && e.message === 'insecure') { msg.textContent = 'Open this page over https:// to sign in.'; return; }
+                const left = registerFail();
+                msg.textContent = left === 0 ? lockText() : ((ADMIN_CONFIG.USE_FIREBASE_AUTH ? authErrorText(e) : 'Incorrect PIN!') + ` (${left} tries left)`);
+            } finally { btn.disabled = false; }
+        }
+
+        let locked = false;
+        function lockNow() {
+            if (!started || locked) return;
+            locked = true;
+            $('unlock-input').value = ''; $('unlock-msg').textContent = '';
+            $('unlock-input').placeholder = ADMIN_CONFIG.USE_FIREBASE_AUTH ? 'Enter password' : 'Enter PIN';
+            $('lock-screen').classList.remove('hidden');
+        }
+        async function doUnlock() {
+            const msg = $('unlock-msg'); const v = $('unlock-input').value;
+            if (lockLeftMs()) { msg.textContent = lockText(); return; }
+            try {
+                if (ADMIN_CONFIG.USE_FIREBASE_AUTH) {
+                    if (!auth.currentUser) throw { code: 'no-user' };
+                    await signInWithEmailAndPassword(auth, auth.currentUser.email, v);
+                } else if ((await sha256(v)) !== ADMIN_CONFIG.PIN_SHA256) throw { code: 'bad-pin' };
+                clearFails(); locked = false; $('lock-screen').classList.add('hidden'); resetIdle();
+            } catch (e) {
+                const left = registerFail();
+                msg.textContent = left === 0 ? lockText() : `Wrong ${ADMIN_CONFIG.USE_FIREBASE_AUTH ? 'password' : 'PIN'} (${left} tries left)`;
+            }
+        }
+
+        let idleTimer; let lastPing = 0;
+        const autoLockMin = () => { const v = parseInt(ls.get('kavya_autolock', ''), 10); return Number.isNaN(v) ? ADMIN_CONFIG.DEFAULT_AUTOLOCK_MIN : v; };
+        function resetIdle() {
+            clearTimeout(idleTimer);
+            const m = autoLockMin();
+            if (!m || locked) return;
+            idleTimer = setTimeout(lockNow, m * 60000);
+        }
+        ['click', 'keydown', 'touchstart', 'mousemove', 'scroll'].forEach((ev) => document.addEventListener(ev, () => {
+            const now = Date.now(); if (now - lastPing < 1000) return; lastPing = now; resetIdle();
+        }, { passive: true }));
+
+        function showLogin() {
+            $('login-screen').classList.remove('hidden');
+            $('dashboard-screen').classList.add('hidden');
+        }
+
+        function enterDashboard() {
+            $('login-screen').classList.add('hidden');
+            $('dashboard-screen').classList.remove('hidden');
+            if (started) return;
+            started = true;
+            startListeners(); initWake(); resetIdle();
+            $('sec-info').innerHTML = ADMIN_CONFIG.USE_FIREBASE_AUTH
+                ? `Signed in as <b>${esc(auth.currentUser ? auth.currentUser.email : '')}</b>. Access is enforced by Firebase Authentication and your Firestore rules.`
+                : 'PIN mode is ON. This only hides the screen. For real protection switch <b>USE_FIREBASE_AUTH</b> to <b>true</b> and publish the Firestore rules.';
+        }
+
+        async function logout() {
+            try { if (ADMIN_CONFIG.USE_FIREBASE_AUTH) await signOut(auth); } catch (e) {}
+            location.reload();
+        }
+
+        if (ADMIN_CONFIG.USE_FIREBASE_AUTH) {
+            $('login-email-box').classList.remove('hidden');
+            onAuthStateChanged(auth, (user) => { if (user) enterDashboard(); else showLogin(); });
+        } else {
+            $('login-pin-box').classList.remove('hidden');
+        }
+        $('login-btn').addEventListener('click', doLogin);
+        $('unlock-btn').addEventListener('click', doUnlock);
+        ['admin-email', 'admin-pass', 'admin-pin'].forEach((id) => $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); }));
+        $('unlock-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') doUnlock(); });
+
+        // ==========================================
+        // 📡 LISTENERS
+        // ==========================================
+        function onListenError(err) {
+            console.error(err);
+            if (err && err.code === 'permission-denied' && !permissionShown) {
+                permissionShown = true;
+                if (ADMIN_CONFIG.USE_FIREBASE_AUTH) { alert('This account is not allowed to open the admin panel. Check the admin email in your Firestore rules.'); logout(); }
+                else alert('Firestore rules are blocking the PIN login. Set USE_FIREBASE_AUTH to true and sign in with the admin email.');
+            }
+        }
+
+        function startListeners() {
+            onSnapshot(query(collection(db, 'orders'), orderBy('timestamp', 'desc'), limit(500)), (snap) => {
+                allOrders = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+                if (!ordersReady) { ordersReady = true; }
+                else {
+                    snap.docChanges().forEach((ch) => {
+                        if (ch.type === 'added' && ch.doc.data().status === 'Preparing') triggerAlarm(ch.doc.id);
+                    });
+                }
+                renderAll();
+            }, onListenError);
+
+            onSnapshot(query(collection(db, 'reservations'), orderBy('timestamp', 'desc'), limit(200)), (snap) => {
+                allResv = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+                renderDining(); renderBadges();
+            }, onListenError);
+
+            onSnapshot(doc(db, 'settings', 'store'), (s) => { store = s.exists() ? s.data() : {}; fillSettings(); renderAll(); renderMenu(); }, () => {});
+            onSnapshot(doc(db, 'settings', 'admin'), (s) => { adminCfg = s.exists() ? s.data() : {}; fillSettings(); renderAll(); }, () => {});
+        }
+
+        // ==========================================
+        // 🔔 ALARM, WAKE LOCK
+        // ==========================================
+        const muted = () => ls.get('kavya_mute', '0') === '1';
+        function paintMute() { $('mute-btn').innerHTML = `<i class="fa-solid ${muted() ? 'fa-volume-xmark' : 'fa-volume-high'}"></i>`; }
+        function triggerAlarm(id) {
+            if (alarmed.has(id)) return;
+            alarmed.add(id);
+            $('alarm-banner').style.display = 'block';
+            if (navigator.vibrate) navigator.vibrate([300, 150, 300]);
+            if (muted()) return;
+            alarmAudio.volume = num(ls.get('kavya_volume', '1')) || 1;
+            alarmAudio.play().catch(() => console.log('Auto-play blocked by browser.'));
+        }
+        function stopAlarm() { alarmAudio.pause(); alarmAudio.currentTime = 0; $('alarm-banner').style.display = 'none'; }
+
+        let wakeLock = null;
+        async function initWake() {
+            const want = ls.get('kavya_wake', '1') === '1';
+            try {
+                if (want && 'wakeLock' in navigator && !wakeLock) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    wakeLock.addEventListener('release', () => { wakeLock = null; });
+                } else if (!want && wakeLock) { await wakeLock.release(); wakeLock = null; }
+            } catch (e) {}
+        }
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && started) initWake(); });
+
+        // ==========================================
+        // 🧮 ORDER HELPERS
+        // ==========================================
+        const isActive = (o) => o.status !== 'Delivered' && o.status !== 'Cancelled';
+        const activeOrders = () => allOrders.filter(isActive);
+        function statusLabel(o) {
+            if (isDine(o)) return ({ 'Preparing': 'Preparing', 'Out for Delivery': 'Ready to Serve', 'Delivered': 'Served' }[o.status]) || o.status;
+            return o.status;
+        }
+
+        function billProblems(o) {
+            const out = [];
+            const items = Array.isArray(o.items) ? o.items : [];
+            if (typeof menuItems !== 'undefined') {
+                items.forEach((it) => {
+                    const m = menuItems.find((x) => x.id === it.id);
+                    if (!m) { out.push(`Unknown dish: ${it.name}`); return; }
+                    const v = (m.variants || []).find((x) => x.size === it.variant);
+                    const expected = v ? v.price : m.price;
+                    if (num(it.price) !== num(expected)) out.push(`${it.name}: paid ₹${num(it.price)}, menu ₹${num(expected)}`);
+                });
+            }
+            const sub = items.reduce((s, i) => s + num(i.price) * num(i.quantity), 0);
+            const gst = Math.floor(sub * gstRate());
+            const delivery = isDine(o) ? 0 : (sub >= freeAbove() ? 0 : delFee());
+            const coins = num(o.coinsRedeemed);
+            if (coins > Math.floor(sub * 0.10)) out.push(`Coins used ₹${coins} is above the 10% limit`);
+            const expected = sub + gst + delivery - coins;
+            if (Math.abs(expected - num(o.totalAmount)) > 1) out.push(`Bill ₹${num(o.totalAmount)} but expected ₹${expected}`);
+            return out;
+        }
+
+        let phoneStats = {};
+        function buildPhoneStats() {
+            phoneStats = {};
+            const today = dayKey(new Date());
+            allOrders.forEach((o) => {
+                const p = String(o.phone || ''); if (!p) return;
+                const s = phoneStats[p] || (phoneStats[p] = { today: 0, cancelled: 0 });
+                if (dayKey(tsOf(o)) === today) s.today++;
+                if (o.status === 'Cancelled') s.cancelled++;
+            });
+        }
+        const blockedSet = () => new Set((adminCfg.blockedPhones || []).map(String));
+
+        function flagsFor(o) {
+            const flags = []; let detail = '';
+            if (blockedSet().has(String(o.phone))) flags.push('<span class="flag warn">⛔ BLOCKED NUMBER</span>');
+            const ps = phoneStats[String(o.phone)];
+            if (ps && ps.today >= 3) flags.push(`<span class="flag warn">🔁 ${ps.today} orders today</span>`);
+            else if (ps && ps.today === 2) flags.push('<span class="flag info">🔁 2nd order today</span>');
+            if (ps && ps.cancelled >= 2) flags.push(`<span class="flag warn">❌ ${ps.cancelled} cancelled before</span>`);
+            const probs = billProblems(o);
+            if (probs.length) { flags.push('<span class="flag warn">⚠️ CHECK BILL</span>'); detail = probs.map(esc).join('<br>'); }
+            return (flags.length ? `<div class="flags">${flags.join('')}</div>` : '') + (detail ? `<div class="flag-detail">${detail}</div>` : '');
+        }
+
+        // ==========================================
+        // 🖥️ RENDERERS
+        // ==========================================
+        function renderAll() {
+            buildPhoneStats(); paintStorePill(); paintMute();
+            renderOrders(); renderTables(); renderBadges(); renderHistory(); renderDashboard();
+        }
+
+        function renderBadges() {
+            const act = activeOrders();
+            $('order-badge').textContent = act.length;
+            $('table-badge').textContent = new Set(act.filter(isDine).map((o) => String(o.tableNumber))).size;
+            const pend = allResv.filter((r) => r.status === 'Pending').length;
+            $('dining-badge').textContent = pend;
+            $('dining-badge').classList.toggle('hidden', pend === 0);
+        }
+
+        function paintStorePill() {
+            const open = store.isOpen !== false;
+            const p = $('store-pill');
+            p.textContent = open ? '🟢 OPEN' : '🔴 CLOSED';
+            p.className = 'pill ' + (open ? 'open' : 'closed');
+        }
+
+        function orderCard(o) {
+            const dine = isDine(o);
+            const paid = o.paymentStatus === 'Paid';
+            const items = (Array.isArray(o.items) ? o.items : []).map((it) => {
+                let meta = it.variant || '';
+                if (it.spice && it.spice !== 'None') meta += ` | Spice: ${spiceLabel(it.spice)}`;
+                return `<div class="item-row"><span>${esc(it.quantity)}x ${esc(it.name)}</span><span>₹${esc(num(it.price) * num(it.quantity))}</span></div><div class="item-meta">${esc(meta)}</div>`;
+            }).join('');
+
+            const defPrep = cfgNum('defaultPrepMinutes', 20);
+            const preps = [10, 15, 20, 30, 45];
+            const prepHtml = o.status === 'Preparing' ? `
+                <div class="prep-row"><span>⏱ Prep time:</span>${preps.map((m) => `<button class="prep-btn ${num(o.prepMinutes) === m ? 'active' : ''}" data-act="prep" data-id="${esc(o.id)}" data-min="${m}">${m}m</button>`).join('')}</div>` : (o.prepMinutes ? `<div class="prep-row"><span>⏱ Prep time: ${esc(o.prepMinutes)} min</span></div>` : '');
+
+            let payBtn = '';
+            if (!paid) payBtn = o.paymentMethod === 'UPI'
+                ? `<button class="btn btn-paid" data-act="paid" data-id="${esc(o.id)}"><i class="fa-solid fa-check-double"></i> Verify UPI Payment</button>`
+                : `<button class="btn btn-outline" data-act="paid" data-id="${esc(o.id)}"><i class="fa-solid fa-hand-holding-dollar"></i> Mark Cash Received</button>`;
+
+            let statusBtn = '';
+            if (o.status === 'Preparing') statusBtn = dine
+                ? `<button class="btn btn-status" data-act="status" data-id="${esc(o.id)}" data-to="Out for Delivery">Ready to Serve 🍽️</button>`
+                : `<button class="btn btn-status" data-act="status" data-id="${esc(o.id)}" data-to="Out for Delivery">Send Out For Delivery 🛵</button>`;
+            else if (o.status === 'Out for Delivery') statusBtn = `<button class="btn btn-status" style="background:#555;color:#fff;" data-act="status" data-id="${esc(o.id)}" data-to="Delivered">${dine ? 'Mark Served ✅' : 'Mark Delivered ✅'}</button>`;
+
+            const gps = safeUrl(o.gpsLink);
+            const info = dine ? '' : `
+                <div class="c-address"><i class="fa-solid fa-location-dot"></i> ${esc(o.address)}</div>
+                ${gps ? `<a href="${esc(gps)}" target="_blank" rel="noopener noreferrer" class="c-gps"><i class="fa-solid fa-map"></i> Open Google Maps</a>` : ''}`;
+
+            const top = dine
+                ? `<div class="table-banner">🪑 TABLE ${esc(o.tableNumber)}</div>`
+                : '<div class="del-banner">🛵 HOME DELIVERY</div>';
+
+            const phone = esc(o.phone);
+            return `
+            <div class="admin-card ${dine ? 'dine' : ''}">
+                <div class="card-header">
+                    <div class="order-id"><i class="fa-solid fa-receipt"></i> ${esc(o.orderId)}</div>
+                    <div class="time-badge" data-ts="${tsOf(o).getTime()}">${esc(statusLabel(o))} • ${ago(tsOf(o))}</div>
+                </div>
+                ${top}
+                ${flagsFor(o)}
+                <div class="customer-info">
+                    <div class="c-name">${esc(o.customer)}</div>
+                    <div class="c-phone"><i class="fa-solid fa-phone"></i> <a href="tel:${phone}">${phone}</a></div>
+                    ${info}
+                </div>
+                <div class="item-list">${items}</div>
+                <div class="finance-row">
+                    <div class="total-amt">${money(o.totalAmount)}</div>
+                    <div class="pay-method ${o.paymentMethod === 'UPI' ? 'pay-upi' : 'pay-cod'}">${esc(o.paymentMethod)} - ${paid ? 'PAID ✅' : 'PENDING ⏳'}</div>
+                </div>
+                ${prepHtml}
+                <div class="action-buttons">
+                    ${dine
+                        ? `<button class="btn btn-kot" data-act="kot" data-id="${esc(o.id)}"><i class="fa-solid fa-print"></i> Send to Kitchen (KOT)</button>`
+                        : `<button class="btn btn-whatsapp" data-act="wa" data-id="${esc(o.id)}"><i class="fa-brands fa-whatsapp"></i> Send to Rider via WhatsApp</button>
+                           <button class="btn btn-kot" data-act="kot" data-id="${esc(o.id)}"><i class="fa-solid fa-print"></i> Print KOT</button>`}
+                    ${payBtn}
+                    ${statusBtn}
+                    <button class="btn btn-danger" data-act="cancel" data-id="${esc(o.id)}">Cancel</button>
+                </div>
+            </div>`;
+        }
+
+        function renderOrders() {
+            const q = $('order-search').value.trim().toLowerCase();
+            let list = activeOrders();
+            if (orderFilter === 'Dine-in') list = list.filter(isDine);
+            if (orderFilter === 'Delivery') list = list.filter((o) => !isDine(o));
+            if (q) list = list.filter((o) => [o.orderId, o.phone, o.customer].some((v) => String(v || '').toLowerCase().includes(q)));
+            $('orders-container').innerHTML = list.length
+                ? list.map(orderCard).join('')
+                : `<p class="empty"><i class="fa-solid fa-mug-hot"></i>${q || orderFilter !== 'all' ? 'No orders match this filter.' : 'Kitchen is clear. Waiting for orders...'}</p>`;
+        }
+
+        function renderTables() {
+            const groups = {};
+            activeOrders().filter(isDine).forEach((o) => { (groups[String(o.tableNumber)] = groups[String(o.tableNumber)] || []).push(o); });
+            const keys = Object.keys(groups).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+            $('tables-container').innerHTML = keys.length ? keys.map((t) => {
+                const orders = groups[t];
+                const total = orders.reduce((s, o) => s + num(o.totalAmount), 0);
+                const pending = orders.filter((o) => o.paymentStatus !== 'Paid').reduce((s, o) => s + num(o.totalAmount), 0);
+                const merged = {};
+                orders.forEach((o) => (o.items || []).forEach((it) => {
+                    const k = `${it.name}|${it.variant || ''}|${it.spice || ''}`;
+                    merged[k] = merged[k] || { it, q: 0 }; merged[k].q += num(it.quantity);
+                }));
+                const rows = Object.values(merged).map(({ it, q }) => `<div class="item-row"><span>${esc(q)}x ${esc(it.name)}</span><span>${esc(it.variant || '')}</span></div>${it.spice && it.spice !== 'None' ? `<div class="item-meta">Spice: ${esc(spiceLabel(it.spice))}</div>` : ''}`).join('');
+                const stat = orders.map((o) => `<span class="flag">${esc(o.orderId)}: ${esc(statusLabel(o))}</span>`).join(' ');
+                return `
+                <div class="admin-card dine">
+                    <div class="table-banner">🪑 TABLE ${esc(t)}</div>
+                    <div class="flags">${stat}</div>
+                    <div class="item-list">${rows}</div>
+                    <div class="finance-row"><div><small style="color:#888;">Combined bill (${orders.length} order${orders.length > 1 ? 's' : ''})</small><div class="table-total">${money(total)}</div></div>
+                    <div class="pay-method ${pending ? 'pay-upi' : 'pay-cod'}">${pending ? 'DUE ' + money(pending) : 'ALL PAID ✅'}</div></div>
+                    <div class="action-buttons"><button class="btn btn-paid" data-act="closetable" data-table="${esc(t)}">Close Table (Served + Paid)</button></div>
+                </div>`;
+            }).join('') : '<p class="empty"><i class="fa-solid fa-chair"></i>No tables are running right now.</p>';
+        }
+
+        function renderDining() {
+            const list = allResv.filter((r) => r.status === 'Pending');
+            $('dining-container').innerHTML = list.length ? list.map((r) => `
+                <div class="admin-card">
+                    <div class="card-header"><div class="order-id"><i class="fa-solid fa-chair"></i> ${esc(r.reservationId)}</div><div class="time-badge">${esc(r.status)}</div></div>
+                    <div class="customer-info"><div class="c-name">${esc(r.customer)}</div><div class="c-phone"><i class="fa-solid fa-phone"></i> <a href="tel:${esc(r.phone)}">${esc(r.phone)}</a></div></div>
+                    <div style="font-size:18px; color:var(--gold); font-weight:900; margin-bottom:12px; text-align:center; background:#0a0a0a; padding:10px; border-radius:10px; border:1px solid #333;">${esc(r.guests)} Guests at ${esc(r.time)}</div>
+                    <input class="note-input" id="note-${esc(r.id)}" maxlength="120" placeholder="Note for customer (e.g. Table 4 on first floor)">
+                    <div class="action-buttons">
+                        <button class="btn btn-paid" data-act="resv" data-id="${esc(r.id)}" data-to="Confirmed">Confirm Table</button>
+                        <button class="btn btn-outline" data-act="resv" data-id="${esc(r.id)}" data-to="Cancelled">Deny</button>
+                    </div>
+                </div>`).join('') : '<p class="empty"><i class="fa-solid fa-chair"></i>No pending table requests.</p>';
+        }
+
+        // ---------- History ----------
+        function historyList() {
+            const from = $('hist-from').value; const to = $('hist-to').value;
+            const st = $('hist-status').value; const q = $('hist-search').value.trim().toLowerCase();
+            return allOrders.filter((o) => !isActive(o)).filter((o) => {
+                const k = dayKey(tsOf(o));
+                if (from && k < from) return false;
+                if (to && k > to) return false;
+                if (st !== 'all' && o.status !== st) return false;
+                if (q && ![o.orderId, o.phone, o.customer].some((v) => String(v || '').toLowerCase().includes(q))) return false;
+                return true;
+            });
+        }
+        function renderHistory() {
+            const list = historyList();
+            const sales = list.filter((o) => o.status === 'Delivered').reduce((s, o) => s + num(o.totalAmount), 0);
+            $('hist-summary').textContent = `${list.length} orders • Sales (delivered/served): ${money(sales)}` + (allOrders.length >= 500 ? ' • showing latest 500 orders' : '');
+            $('history-container').innerHTML = list.length ? list.slice(0, 200).map((o) => `
+                <div class="hist-row">
+                    <div><b>${esc(o.orderId)}</b> • ${esc(o.customer)}<small>${esc(tsOf(o).toLocaleString('en-IN'))} • ${isDine(o) ? 'Table ' + esc(o.tableNumber) : 'Delivery'} • ${esc(o.paymentMethod)}${o.cancelReason ? ' • ' + esc(o.cancelReason) : ''}</small></div>
+                    <div style="text-align:right;"><b>${money(o.totalAmount)}</b><small class="hist-status ${o.status === 'Delivered' ? 'ok' : 'bad'}">${esc(o.status === 'Delivered' && isDine(o) ? 'Served' : o.status)}</small></div>
+                </div>`).join('') : '<p class="empty"><i class="fa-solid fa-clock-rotate-left"></i>No orders in this range.</p>';
+        }
+        function csvCell(v) {
+            let s = String(v ?? '');
+            if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; // stops spreadsheet formula injection
+            return '"' + s.replace(/"/g, '""') + '"';
+        }
+        function exportCsv() {
+            const rows = [['Order ID', 'Date', 'Time', 'Customer', 'Phone', 'Type', 'Table', 'Items', 'Total', 'Payment', 'Payment Status', 'Status', 'Cancel Reason']];
+            historyList().forEach((o) => {
+                const d = tsOf(o);
+                rows.push([o.orderId, dayKey(d), d.toLocaleTimeString('en-IN'), o.customer, o.phone, isDine(o) ? 'Dine-in' : 'Delivery', o.tableNumber ?? '',
+                    (o.items || []).map((i) => `${i.quantity}x ${i.name} (${i.variant || ''})`).join('; '), num(o.totalAmount), o.paymentMethod, o.paymentStatus || 'Pending', o.status, o.cancelReason || '']);
+            });
+            const blob = new Blob(['\ufeff' + rows.map((r) => r.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = `kavya-orders-${dayKey(new Date())}.csv`;
+            document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        }
+
+        // ---------- Today dashboard ----------
+        function renderDashboard() {
+            const day = $('dash-date').value || dayKey(new Date());
+            const all = allOrders.filter((o) => dayKey(tsOf(o)) === day);
+            const ok = all.filter((o) => o.status !== 'Cancelled');
+            const cancelled = all.length - ok.length;
+            const rev = ok.reduce((s, o) => s + num(o.totalAmount), 0);
+            const avg = ok.length ? Math.round(rev / ok.length) : 0;
+            const sum = (f) => ok.filter(f).reduce((s, o) => s + num(o.totalAmount), 0);
+            const due = ok.filter((o) => o.paymentStatus !== 'Paid').reduce((s, o) => s + num(o.totalAmount), 0);
+            const dishes = {};
+            ok.forEach((o) => (o.items || []).forEach((i) => { dishes[i.name] = (dishes[i.name] || 0) + num(i.quantity); }));
+            const top = Object.entries(dishes).sort((a, b) => b[1] - a[1]).slice(0, 8);
+            const max = top.length ? top[0][1] : 1;
+            $('dashboard-container').innerHTML = `
+                <div class="stat-grid">
+                    <div class="stat"><small>Orders</small><b>${ok.length}</b></div>
+                    <div class="stat"><small>Revenue</small><b class="gold">${money(rev)}</b></div>
+                    <div class="stat"><small>Average bill</small><b>${money(avg)}</b></div>
+                    <div class="stat"><small>Cancelled</small><b>${cancelled}</b></div>
+                    <div class="stat"><small>UPI</small><b>${money(sum((o) => o.paymentMethod === 'UPI'))}</b></div>
+                    <div class="stat"><small>Cash</small><b>${money(sum((o) => o.paymentMethod !== 'UPI'))}</b></div>
+                    <div class="stat"><small>Dine-in</small><b>${ok.filter(isDine).length} orders</b></div>
+                    <div class="stat"><small>Delivery</small><b>${ok.filter((o) => !isDine(o)).length} orders</b></div>
+                </div>
+                <div class="panel"><h4>Payment still to collect</h4><b style="font-size:22px;color:${due ? '#ff6b6b' : 'var(--neon)'};">${money(due)}</b></div>
+                <div class="panel"><h4>Top dishes</h4>${top.length ? top.map(([n, q]) => `<div class="bar-row"><span class="nm">${esc(n)}</span><span class="bar"><i style="width:${Math.round(q / max * 100)}%"></i></span><span class="qt">${q}</span></div>`).join('') : '<p style="color:#888;font-size:13px;">No sales yet for this day.</p>'}</div>`;
+        }
+
+        // ---------- Menu / sold out ----------
+        function renderMenu() {
+            if (typeof menuItems === 'undefined') { $('menu-container').innerHTML = '<p class="empty">data.js not found next to admin.html.</p>'; return; }
+            const q = $('menu-search').value.trim().toLowerCase();
+            const sold = new Set(store.soldOut || []);
+            const catName = {}; if (typeof categories !== 'undefined') categories.forEach((c) => { catName[c.id] = c.name; });
+            const groups = {};
+            menuItems.filter((m) => !q || m.name.toLowerCase().includes(q)).forEach((m) => { (groups[m.category] = groups[m.category] || []).push(m); });
+            $('menu-summary').textContent = `${sold.size} dish${sold.size === 1 ? '' : 'es'} marked sold out`;
+            $('menu-container').innerHTML = Object.keys(groups).map((c) => `<div class="menu-cat">${esc(catName[c] || c)}</div>` + groups[c].map((m) => `
+                <div class="menu-row ${sold.has(m.id) ? 'sold' : ''}"><div><span class="nm">${esc(m.name)}</span><small>${money(m.price)}</small></div>
+                <label class="switch" title="Sold out"><input type="checkbox" data-soldout="${esc(m.id)}" ${sold.has(m.id) ? 'checked' : ''}><span></span></label></div>`).join('')).join('') || '<p class="empty">No dishes found.</p>';
+        }
+
+        // ---------- Settings ----------
+        function fillSettings() {
+            const active = document.activeElement && document.activeElement.id;
+            const set = (id, v) => { if (active !== id) $(id).value = v; };
+            $('set-open').checked = store.isOpen !== false;
+            set('set-closedmsg', store.closedMessage || '');
+            set('set-gst', Math.round(gstRate() * 1000) / 10);
+            set('set-fee', delFee());
+            set('set-free', freeAbove());
+            set('set-prep', cfgNum('defaultPrepMinutes', 20));
+            set('set-rider', adminCfg.riderPhone || '');
+            $('set-volume').value = ls.get('kavya_volume', '1');
+            $('set-wake').checked = ls.get('kavya_wake', '1') === '1';
+            set('set-autolock', autoLockMin());
+            $('block-list').innerHTML = (adminCfg.blockedPhones || []).map((p) => `<span class="tag">${esc(p)}<button data-act="unblock" data-phone="${esc(p)}">×</button></span>`).join('') || '<span style="color:#666;font-size:12px;">No blocked numbers.</span>';
+        }
+
+        // ==========================================
+        // 🖨️ KOT PRINT + WHATSAPP
+        // ==========================================
+        function printKOT(o) {
+            const dine = isDine(o);
+            const rows = (o.items || []).map((it) => `<tr><td class="q">${esc(it.quantity)}x</td><td>${esc(it.name)}<br><small>${esc(it.variant || '')}${it.spice && it.spice !== 'None' ? ' | ' + esc(spiceLabel(it.spice)) : ''}</small></td></tr>`).join('');
+            const html = `<!doctype html><html><head><meta charset="utf-8"><style>
+                @page{margin:3mm} body{font-family:monospace;width:72mm;font-size:13px;color:#000}
+                h1{font-size:16px;text-align:center;margin:0 0 4px} .big{font-size:26px;text-align:center;font-weight:bold;border:2px solid #000;margin:6px 0;padding:4px}
+                td{vertical-align:top;padding:3px 0} .q{width:36px;font-weight:bold;font-size:15px} small{font-size:11px} hr{border:0;border-top:1px dashed #000}
+            </style></head><body>
+                <h1>KAVYA - KITCHEN TICKET</h1>
+                <div class="big">${dine ? 'TABLE ' + esc(o.tableNumber) : 'DELIVERY'}</div>
+                <div>Order: ${esc(o.orderId)}<br>Time: ${esc(tsOf(o).toLocaleTimeString('en-IN'))}</div><hr>
+                <table>${rows}</table><hr>
+                <div style="text-align:center">${o.prepMinutes ? 'Prep: ' + esc(o.prepMinutes) + ' min' : ''}</div>
+            </body></html>`;
+            const f = document.createElement('iframe');
+            f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+            document.body.appendChild(f);
+            f.contentDocument.open(); f.contentDocument.write(html); f.contentDocument.close();
+            setTimeout(() => { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) {} setTimeout(() => f.remove(), 3000); }, 300);
+        }
+
+        function riderLink(text) {
+            let p = String(adminCfg.riderPhone || '').replace(/\D/g, '');
+            if (p.length === 10) p = ADMIN_CONFIG.COUNTRY_CODE + p;
+            return `https://wa.me/${p}?text=${text}`;
+        }
+        function sendRider(o) {
+            const paid = o.paymentStatus === 'Paid';
+            const text = encodeURIComponent(
+                `*KAVYA RESTAURANT - NEW DELIVERY* 🛵\n\n*Order ID:* ${o.orderId}\n*Customer:* ${o.customer}\n*Phone:* ${o.phone}\n\n` +
+                `*Bill Amount:* ₹${o.totalAmount} (${o.paymentMethod})\n*Payment Status:* ${paid ? 'PAID ✅' : 'PENDING ❌ (Collect Cash/UPI)'}\n\n` +
+                `*Delivery Address:*\n${o.address}\n\n*GPS Map Link:*\n${o.gpsLink || 'Not Provided'}`);
+            window.open(riderLink(text), '_blank', 'noopener');
+        }
+
+        // ==========================================
+        // 🔄 WRITES (orders, reservations, settings)
+        // ==========================================
+        async function write(label, fn) {
+            try { await fn(); return true; }
+            catch (e) { console.error(label, e); toast(e && e.code === 'permission-denied' ? 'Permission denied. Check Firestore rules.' : 'Error: ' + label, true); return false; }
+        }
+        const orderRef = (id) => doc(db, 'orders', id);
+        const findOrder = (id) => allOrders.find((o) => o.id === id);
+
+        async function setStatus(id, to) {
+            const o = findOrder(id); if (!o) return;
+            if (to === 'Delivered' && !confirm(isDine(o) ? 'Mark this order as served?' : 'Mark this order as delivered?')) return;
+            if (await write('status update', () => updateDoc(orderRef(id), { status: to, updatedAt: serverTimestamp() }))) { stopAlarm(); toast('Updated'); }
+        }
+        async function cancelOrder(id) {
+            const o = findOrder(id); if (!o) return;
+            const reason = prompt(`Cancel order ${o.orderId}?\nType a reason (shown to the customer). Press Cancel to keep the order.`, 'Item not available');
+            if (reason === null) return;
+            if (await write('cancel order', () => updateDoc(orderRef(id), { status: 'Cancelled', cancelReason: reason.trim().slice(0, 120) || 'Cancelled by restaurant', updatedAt: serverTimestamp() }))) { stopAlarm(); toast('Order cancelled'); }
+        }
+        async function saveStore(patch) {
+            return write('save settings', () => setDoc(doc(db, 'settings', 'store'), { ...patch, updatedAt: serverTimestamp() }, { merge: true }));
+        }
+        async function saveAdmin(patch) {
+            return write('save admin settings', () => setDoc(doc(db, 'settings', 'admin'), patch, { merge: true }));
+        }
+
+        // ==========================================
+        // 🎛️ EVENTS (one handler for the whole page)
+        // ==========================================
+        document.addEventListener('click', async (e) => {
+            const b = e.target.closest('[data-act]'); if (!b) return;
+            const act = b.dataset.act; const id = b.dataset.id;
+            switch (act) {
+                case 'status': await setStatus(id, b.dataset.to); break;
+                case 'cancel': await cancelOrder(id); break;
+                case 'paid': if (await write('payment update', () => updateDoc(orderRef(id), { paymentStatus: 'Paid', updatedAt: serverTimestamp() }))) toast('Payment recorded'); break;
+                case 'prep': await write('prep time', () => updateDoc(orderRef(id), { prepMinutes: num(b.dataset.min) })); break;
+                case 'kot': { const o = findOrder(id); if (o) printKOT(o); break; }
+                case 'wa': { const o = findOrder(id); if (o) sendRider(o); break; }
+                case 'filter':
+                    orderFilter = b.dataset.v;
+                    document.querySelectorAll('[data-act="filter"]').forEach((c) => c.classList.toggle('active', c === b));
+                    renderOrders(); break;
+                case 'closetable': {
+                    const t = b.dataset.table;
+                    const list = activeOrders().filter((o) => isDine(o) && String(o.tableNumber) === t);
+                    if (!confirm(`Close Table ${t}? ${list.length} order(s) will be marked SERVED and PAID.`)) break;
+                    if (await write('close table', () => Promise.all(list.map((o) => updateDoc(orderRef(o.id), { status: 'Delivered', paymentStatus: 'Paid', updatedAt: serverTimestamp() }))))) toast(`Table ${t} closed`);
+                    break;
+                }
+                case 'resv': {
+                    const noteEl = $('note-' + id);
+                    const note = noteEl ? noteEl.value.trim().slice(0, 120) : '';
+                    if (await write('reservation update', () => updateDoc(doc(db, 'reservations', id), { status: b.dataset.to, adminNote: note, updatedAt: serverTimestamp() }))) toast('Reservation ' + b.dataset.to.toLowerCase());
+                    break;
+                }
+                case 'export-csv': exportCsv(); break;
+                case 'toggle-store': { const open = store.isOpen !== false; if (confirm(open ? 'Stop accepting new orders?' : 'Start accepting orders again?')) await saveStore({ isOpen: !open }); break; }
+                case 'toggle-mute': ls.set('kavya_mute', muted() ? '0' : '1'); paintMute(); if (muted()) stopAlarm(); break;
+                case 'lock-now': lockNow(); break;
+                case 'logout': await logout(); break;
+                case 'stop-alarm': stopAlarm(); break;
+                case 'test-alarm': alarmAudio.volume = num(ls.get('kavya_volume', '1')) || 1; alarmAudio.play().catch(() => toast('Tap again to allow sound', true)); break;
+                case 'save-store': {
+                    const gst = num($('set-gst').value), fee = num($('set-fee').value), free = num($('set-free').value), prep = num($('set-prep').value);
+                    if (gst < 0 || gst > 28 || fee < 0 || fee > 500 || free < 0 || free > 5000 || prep < 5 || prep > 120) { toast('Please check the numbers', true); break; }
+                    if (await saveStore({ gstRate: gst / 100, deliveryFee: fee, freeDeliveryThreshold: free, defaultPrepMinutes: prep, closedMessage: $('set-closedmsg').value.trim().slice(0, 120) })) toast('Settings saved');
+                    break;
+                }
+                case 'save-rider': {
+                    const p = $('set-rider').value.replace(/\D/g, '');
+                    if (p && p.length !== 10 && p.length !== 12) { toast('Enter a 10-digit number', true); break; }
+                    if (await saveAdmin({ riderPhone: p })) toast('Rider number saved');
+                    break;
+                }
+                case 'add-block': {
+                    const p = $('block-input').value.replace(/\D/g, '');
+                    if (p.length !== 10) { toast('Enter a 10-digit number', true); break; }
+                    if (await write('block number', () => setDoc(doc(db, 'settings', 'admin'), { blockedPhones: arrayUnion(p) }, { merge: true }))) { $('block-input').value = ''; toast('Number blocked'); }
+                    break;
+                }
+                case 'unblock': await write('unblock', () => setDoc(doc(db, 'settings', 'admin'), { blockedPhones: arrayRemove(b.dataset.phone) }, { merge: true })); break;
+            }
+        });
+
+        document.addEventListener('change', async (e) => {
+            const t = e.target;
+            if (t.dataset && t.dataset.soldout) {
+                const ok = await write('sold out', () => setDoc(doc(db, 'settings', 'store'), { soldOut: t.checked ? arrayUnion(t.dataset.soldout) : arrayRemove(t.dataset.soldout), updatedAt: serverTimestamp() }, { merge: true }));
+                if (!ok) t.checked = !t.checked;
+            } else if (t.id === 'set-open') {
+                if (!(await saveStore({ isOpen: t.checked }))) t.checked = !t.checked;
+            } else if (t.id === 'set-volume') { ls.set('kavya_volume', t.value); }
+            else if (t.id === 'set-wake') { ls.set('kavya_wake', t.checked ? '1' : '0'); initWake(); }
+            else if (t.id === 'set-autolock') { ls.set('kavya_autolock', String(Math.max(0, Math.min(120, parseInt(t.value, 10) || 0)))); resetIdle(); toast('Auto-lock saved'); }
+        });
+
+        const VIEWS = ['orders', 'tables', 'dining', 'history', 'dashboard', 'menu', 'settings'];
+        $('tabs').addEventListener('click', (e) => {
+            const b = e.target.closest('[data-tab]'); if (!b) return;
+            VIEWS.forEach((v) => { $('view-' + v).classList.toggle('hidden', v !== b.dataset.tab); });
+            document.querySelectorAll('.tab-btn').forEach((x) => x.classList.toggle('active', x === b));
+            if (b.dataset.tab === 'menu') renderMenu();
+            if (b.dataset.tab === 'settings') fillSettings();
+            window.scrollTo(0, 0);
+        });
+
+        $('order-search').addEventListener('input', renderOrders);
+        ['hist-from', 'hist-to', 'hist-status', 'hist-search'].forEach((id) => $(id).addEventListener('input', renderHistory));
+        $('dash-date').addEventListener('input', renderDashboard);
+        $('menu-search').addEventListener('input', renderMenu);
+
+        $('hist-from').value = $('hist-to').value = $('dash-date').value = dayKey(new Date());
+
+        // keep "x min ago" fresh without re-rendering everything
+        setInterval(() => {
+            document.querySelectorAll('.time-badge[data-ts]').forEach((el) => {
+                const label = el.textContent.split(' • ')[0];
+                el.textContent = label + ' • ' + ago(new Date(num(el.dataset.ts)));
+            });
+        }, 30000);
+    </script>
+</body>
+  </html>
