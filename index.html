@@ -1,4 +1,242 @@
-DOC《type》
-     HTML 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Kavya Family Restaurant - Order Online &amp; Dine-in</title>
+    <meta name="description" content="Order biryani, rolls, chowmein, paneer, chicken curries, kebabs and fresh breads from Kavya Family Restaurant, Patna. Home delivery and table ordering.">
+    <meta name="theme-color" content="#050505">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="Kavya Family Restaurant">
+    <meta property="og:description" content="Order online or dine in. Biryani, rolls, chowmein, paneer, chicken and more.">
+    <meta property="og:type" content="restaurant.restaurant">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="core.css">
+    <link rel="stylesheet" href="premium.css">
+
+    <!-- Small helper styles for classes the page uses (keeps core.css and premium.css untouched) -->
+    <style>
+        .mt-25 { margin-top: 25px; }
+        .z-text-muted { color: var(--z-muted); }
+        .z-neon { color: var(--z-neon); font-weight: 900; }
+        .z-celeb-text { color: #ccc; font-size: 15px; font-weight: 600; }
+        .z-section-title { color: #fff; font-size: 18px; font-weight: 800; }
+        .z-label { font-size: 12px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+        .z-card { background: #111; border: 1px solid var(--z-border); border-radius: 18px; padding: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+        .z-counter-box { display: flex; align-items: center; justify-content: space-between; background: #151515; border: 1px solid #333; border-radius: 14px; padding: 8px; margin-top: 8px; }
+        .z-counter-box button { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--z-gold); background: rgba(212, 175, 55, 0.1); color: var(--z-gold); font-size: 22px; font-weight: 900; cursor: pointer; }
+        .z-counter-box button:active { transform: scale(0.92); }
+        .z-search-input { transition: opacity 0.3s; }
+        body.table-mode .z-header-row { justify-content: flex-end; }
+        .z-profile-btn img { background: #222; }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Kavya Family Restaurant",
+        "servesCuisine": ["Indian", "Chinese"],
+        "address": { "@type": "PostalAddress", "addressLocality": "Patna", "addressRegion": "Bihar", "addressCountry": "IN" }
+    }
+    </script>
+</head>
+<body class="zomato-body">
+
+    <noscript>
+        <div style="padding:30px; text-align:center; color:#fff; background:#b71c1c; font-family:sans-serif;">
+            Please turn on JavaScript to order from Kavya Family Restaurant.
+        </div>
+    </noscript>
+
+    <!-- SPLASH -->
+    <div id="splash-screen" class="z-splash">
+        <div class="z-splash-content">
+            <h1 class="z-brand-3d">KAVYA</h1>
+            <p class="z-sub-brand">FAMILY RESTAURANT</p>
+            <div class="z-shimmer-line"></div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast-container" role="status" aria-live="polite">
+        <i id="toast-icon" class="fa-solid fa-circle-check"></i>
+        <span id="toast-message">Notification</span>
+    </div>
+
+    <!-- COIN CELEBRATION -->
+    <div id="coin-celebration" class="z-overlay hidden">
+        <div class="z-celeb-card z-bounce">
+            <div class="z-coin-3d"><i class="fa-solid fa-coins"></i></div>
+            <h2 class="z-celeb-title">BOOM! 🎉</h2>
+            <p class="z-celeb-text">You earned <span id="earned-coins" class="z-neon">0</span> Kavya Coins!</p>
+            <button class="z-gold-btn mt-20" onclick="closePopup('coin-celebration')">Claim Reward</button>
+        </div>
+    </div>
+
+    <!-- The spice / size popup is built by app.js (openSmartSelector). -->
+
+    <!-- ================= HOME / DELIVERY ================= -->
+    <div id="home-page" class="z-page active-page">
+        <div class="z-red-header-zone">
+            <header class="z-sticky-nav" id="main-header">
+                <div class="z-header-row">
+                    <div class="z-loc-box" onclick="requestHighAccuracyGPS()">
+                        <i class="fa-solid fa-location-dot z-loc-pin"></i>
+                        <div class="z-loc-text">
+                            <span class="z-loc-title" id="user-location">Ramkrishna Nagar <i class="fa-solid fa-chevron-down text-xs"></i></span>
+                            <span class="z-loc-sub">Patna, Bihar, India</span>
+                        </div>
+                    </div>
+                    <div class="z-header-right">
+                        <div class="z-coin-badge" onclick="openPage('login-page')">
+                            <i class="fa-solid fa-coins"></i> <span id="top-coin-bal">50</span>
+                        </div>
+                        <div class="z-profile-btn" onclick="openPage('login-page')">
+                            <img id="nav-profile-pic" alt="Profile" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23d4af37'/%3E%3Ccircle cx='50' cy='38' r='18' fill='%23000'/%3E%3Cellipse cx='50' cy='88' rx='32' ry='26' fill='%23000'/%3E%3C/svg%3E">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="z-search-wrap">
+                    <div class="z-search-bar">
+                        <i class="fa-solid fa-magnifying-glass z-search-ico"></i>
+                        <input type="text" id="main-search" class="z-search-input" placeholder="Search 'Chicken Biryani'..." oninput="filterMenu()" autocomplete="off" aria-label="Search dishes">
+                        <div class="z-search-div"></div>
+                        <i class="fa-solid fa-microphone z-mic-ico" onclick="startVoiceSearch()" role="button" aria-label="Voice search"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div id="dynamic-greeting" class="bespoke-greeting"></div>
+
+            <div class="z-banner-wrap" id="banner-slider">
+                <div class="z-promo-card slide active-slide" id="banner-1">
+                    <div class="z-shine"></div>
+                    <div class="banner-content">
+                        <h2 class="z-banner-title">10% OFF ON FIRST ORDER</h2>
+                        <p class="z-banner-sub">Experience the authentic taste of Kavya</p>
+                    </div>
+                </div>
+                <div class="z-promo-card slide hidden-slide" id="banner-2">
+                    <div class="z-shine"></div>
+                    <div class="banner-content">
+                        <h2 class="z-banner-title">DINING CARNIVAL 🍽️</h2>
+                        <p class="z-banner-sub">Book a table &amp; get ₹175 extra OFF</p>
+                    </div>
+                </div>
+                <div class="z-promo-card slide hidden-slide" id="banner-3">
+                    <div class="z-shine"></div>
+                    <div class="banner-content">
+                        <h2 class="z-banner-title" style="color:var(--z-gold);">EARN KAVYA COINS</h2>
+                        <p class="z-banner-sub" style="color:#ccc;">Pay upto 10% of your bill using coins</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="z-cat-section">
+            <div class="z-cat-scroll" id="category-scroll-container"></div>
+        </div>
+
+        <main class="z-feed-container" id="menu-items-container"></main>
+
+        <div class="legend-watermark-container">
+            <div class="legend-watermark-box">
+                <span class="legend-watermark-text">
+                    <i class="fa-solid fa-bolt legend-bolt-icon"></i>
+                    Powered by <strong class="legend-brand-name">LEGEND</strong>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= DINING ================= -->
+    <div id="dining-page" class="z-page right-slide-page">
+        <header class="z-sub-header">
+            <i class="fa-solid fa-arrow-left z-back" onclick="closePage('dining-page')" role="button" aria-label="Back"></i>
+            <h2>Dining &amp; Table Booking</h2>
+            <div style="width: 24px;"></div>
+        </header>
+
+        <div class="z-scroll-content">
+            <div class="z-dining-canvas">
+                <div class="z-dining-overlay"></div>
+                <div class="z-dining-text">
+                    <h3 class="z-brand-3d">DINING CARNIVAL</h3>
+                    <p>Extra ₹175 OFF on first booking</p>
+                </div>
+            </div>
+
+            <div class="z-dining-body">
+                <h4 class="z-section-title" style="padding: 20px;">Reserve a Table</h4>
+                <div class="z-card" style="margin: 0 20px;">
+                    <label class="z-label z-text-muted">Number of Guests</label>
+                    <div class="z-counter-box">
+                        <button onclick="updateGuests(-1)" aria-label="Fewer guests">-</button>
+                        <span id="guest-count" style="color:#fff; font-weight:800; font-size:18px;">2 Guests</span>
+                        <button onclick="updateGuests(1)" aria-label="More guests">+</button>
+                    </div>
+
+                    <label class="z-label z-text-muted mt-15" style="display:block;">Select Time Slot</label>
+                    <input type="time" class="z-input mt-5" value="19:30">
+
+                    <button class="z-gold-btn mt-20" onclick="reserveTable(this)">Confirm Reservation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= CART ================= -->
+    <div id="cart-page" class="z-page right-slide-page">
+        <header class="z-sub-header">
+            <i class="fa-solid fa-arrow-left z-back" onclick="closePage('cart-page')" role="button" aria-label="Back"></i>
+            <h2>Secure Checkout</h2>
+            <div style="width: 24px;"></div>
+        </header>
+
+        <div class="z-scroll-content p-20" id="cart-items-container"></div>
+    </div>
+
+    <!-- ================= LOGIN / PROFILE ================= -->
+    <div id="login-page" class="z-page right-slide-page">
+        <header class="z-sub-header">
+            <i class="fa-solid fa-arrow-left z-back" onclick="closePage('login-page')" role="button" aria-label="Back"></i>
+            <h2>VIP Portal</h2>
+            <div style="width: 24px;"></div>
+        </header>
+
+        <div class="z-scroll-content p-20" id="auth-container"></div>
+    </div>
+
+    <!-- ================= BOTTOM BAR (order matters: Delivery, Dining, Cart) ================= -->
+    <nav class="z-taskbar">
+        <div class="z-nav-item active" onclick="openPage('home-page'); scrollHomeTop();">
+            <i class="fa-solid fa-house"></i>
+            <span>Delivery</span>
+        </div>
+        <div class="z-nav-item" onclick="openPage('dining-page')">
+            <i class="fa-solid fa-bell-concierge"></i>
+            <span>Dining</span>
+        </div>
+        <div class="z-nav-item z-cart-tab" onclick="openPage('cart-page')">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Cart</span>
+            <div class="z-badge hidden" id="nav-cart-count">0</div>
+        </div>
+    </nav>
+
+    <script src="data.js"></script>
+    <script src="ui.js"></script>
+    <script src="app.js"></script>
+
+</body>
+     </html>
      
