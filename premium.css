@@ -1,0 +1,363 @@
+/* ==========================================================
+   PREMIUM.CSS - Advanced Glassmorphism, 3D Physics & Animations
+   ----------------------------------------------------------
+   Updated to match app.js / ui.js / index.html:
+   - spice buttons: 🟢 Mild / 🟡 Medium / 🔴 Extra Spicy colours
+   - size buttons (gold), smart popup fade, add-to-cart pop + cart bump
+   - no-animation redraw mode, reduced-motion support
+   ========================================================== */
+
+/* --- 1. DYNAMIC AURORA & MESH GRADIENT BACKGROUND --- */
+.aurora-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -1;
+    background-color: var(--z-bg);
+    background-image:
+        radial-gradient(circle at 15% 50%, rgba(226, 55, 68, 0.09) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.07) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(0, 229, 255, 0.04) 0%, transparent 50%);
+    background-size: 150% 150%;
+    animation: auroraComplexShift 25s ease-in-out infinite alternate;
+}
+@keyframes auroraComplexShift {
+    0% { background-position: 0% 0%; transform: scale(1); }
+    50% { background-position: 100% 100%; transform: scale(1.02); }
+    100% { background-position: 0% 50%; transform: scale(1); }
+}
+
+/* --- 2. CINEMATIC SPLASH SCREEN (Deep 3D) --- */
+.z-splash {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    background: #000; z-index: 999999;
+    display: flex; justify-content: center; align-items: center;
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+.z-splash.fade-out {
+    opacity: 0;
+    transform: scale(1.1);
+    pointer-events: none;
+}
+.z-splash-content {
+    text-align: center;
+    animation: pulseGlowDeep 2.5s infinite alternate;
+}
+.z-brand-3d {
+    font-size: 60px; font-weight: 900; color: var(--z-gold); margin: 0;
+    text-shadow:
+        0 2px 0px #b8860b,
+        0 4px 0px #996515,
+        0 10px 25px rgba(212,175,55,0.6),
+        0 2px 4px rgba(0,0,0,0.9);
+    letter-spacing: 3px;
+    transform: perspective(500px) rotateX(10deg);
+}
+.z-sub-brand {
+    color: var(--z-neon); font-size: 15px; font-weight: 800;
+    letter-spacing: 6px; margin-top: 8px; text-transform: uppercase;
+}
+.z-shimmer-line {
+    width: 220px; height: 5px; background: rgba(255,255,255,0.1);
+    margin: 30px auto 0; border-radius: 10px; position: relative; overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+}
+.z-shimmer-line::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, var(--z-gold), transparent);
+    animation: loadingBarPro 1.5s infinite ease-in-out;
+}
+@keyframes pulseGlowDeep {
+    0% { filter: drop-shadow(0 0 15px rgba(212,175,55,0.3)); }
+    100% { filter: drop-shadow(0 0 45px rgba(212,175,55,0.8)); }
+}
+@keyframes loadingBarPro {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
+/* --- 3. PROMO BANNER (Zomato Shine & Hover Physics) --- */
+.bespoke-greeting {
+    padding: 20px 20px 0; font-size: 26px; font-weight: 900;
+    color: #fff; text-shadow: 2px 4px 10px rgba(0,0,0,0.8);
+    letter-spacing: 0.5px;
+}
+.z-banner-wrap {
+    padding: 12px 20px 0; perspective: 1200px;
+}
+.z-promo-card {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+    padding: 30px 20px; text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.15);
+    transform-style: preserve-3d; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.z-promo-card:active { transform: scale(0.95) rotateX(8deg); }
+.z-shine {
+    position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg); animation: shinePassHeavy 4s infinite;
+}
+@keyframes shinePassHeavy {
+    0%, 20% { left: -100%; }
+    80%, 100% { left: 200%; }
+}
+.z-banner-title {
+    font-size: 42px; font-weight: 900; color: #fff; font-style: italic;
+    letter-spacing: -1.5px; text-shadow: 5px 5px 0px var(--z-red); line-height: 1;
+}
+.z-banner-sub {
+    color: var(--z-gold); font-weight: 800; font-size: 15px;
+    margin-top: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+}
+
+/* --- 4. APPLE-STYLE 3D PLATES & HORIZONTAL SCROLL PHYSICS --- */
+.z-cat-icon {
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.z-cat-icon::after {
+    content: ''; position: absolute; bottom: -10px; left: 5%; width: 90%; height: 15px;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.9) 0%, transparent 75%);
+    z-index: -1; transition: opacity 0.3s, transform 0.3s;
+}
+.z-cat-item { transition: transform 0.2s ease; }
+.z-cat-item.active .z-cat-icon { transform: translateY(-8px); }
+.z-cat-item.active .z-cat-icon::after { opacity: 0.5; transform: scale(0.8); }
+.z-cat-item:active { transform: scale(0.9); }
+
+/* --- 5. FOOD CARDS (Parallax & Advanced Glass Bookmark) --- */
+.z-food-card {
+    opacity: 0;
+    animation: fadeUpPro 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes fadeUpPro {
+    from { opacity: 0; transform: translateY(40px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* app.js adds .z-no-anim when it quietly redraws the menu (after ADD, search, sold-out change) */
+.z-menu-feed.z-no-anim .z-food-card {
+    animation: none !important;
+    opacity: 1 !important;
+}
+
+.z-food-img-box img {
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.z-food-card:active .z-food-img-box img {
+    transform: scale(1.1);
+}
+
+.z-bookmark-btn {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, border-color 0.3s;
+    background: rgba(20,20,20,0.6);
+}
+.z-bookmark-btn:active { transform: scale(0.7); }
+.z-bookmark-btn.bookmarked {
+    background: rgba(0,0,0,0.9); color: var(--z-gold);
+    transform: scale(1.2); border-color: var(--z-gold);
+    box-shadow: 0 0 20px rgba(212,175,55,0.4);
+}
+
+/* pop when a dish is added, bump when the cart icon receives it */
+.z-pop { animation: kvPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes kvPop {
+    0% { transform: scale(0.7); }
+    100% { transform: scale(1); }
+}
+.z-cart-bump { animation: kvBump 0.5s; }
+@keyframes kvBump {
+    0%, 100% { transform: scale(1); }
+    40% { transform: scale(1.35) rotate(-8deg); }
+}
+#mini-cart.show { animation: kvPop 0.35s; }
+
+/* --- 6. HEAVY GLASSMORPHISM OVERLAYS & BOTTOM SHEETS --- */
+.z-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 99999; display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
+}
+.z-overlay.hidden { opacity: 0; pointer-events: none; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); }
+
+/* the spice / size popup that app.js builds fades in and out smoothly */
+#dynamic-smart-modal { opacity: 0; transition: opacity 0.3s ease; }
+#dynamic-smart-modal.open { opacity: 1; }
+
+/* Bottom Sheet (Pro Drag Physics) */
+.z-bottom-sheet {
+    background: #111; width: 100%; position: absolute; bottom: 0;
+    border-radius: 35px 35px 0 0; padding: 25px 25px 45px;
+    padding-bottom: max(45px, env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 -15px 60px rgba(0,0,0,0.95);
+    will-change: transform;
+    max-height: 90vh; overflow-y: auto;
+}
+.z-slide-up { animation: slideUpPro 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes slideUpPro {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(0); }
+}
+.z-sheet-handle { width: 50px; height: 6px; background: #555; border-radius: 4px; margin: 0 auto 25px; }
+.z-sheet-title { color: #fff; margin-bottom: 8px; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+.z-spice-grid { display: flex; gap: 15px; margin-bottom: 30px; }
+
+/* Spice + size buttons */
+.z-spice-btn {
+    background: #1a1a1a; color: #999; padding: 14px 8px; border-radius: 14px;
+    flex: 1; text-align: center; font-size: 14px; font-weight: 800;
+    border: 1px solid #333; transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+}
+.z-spice-btn.active {
+    background: rgba(226,55,68,0.18); border-color: var(--z-red); color: var(--z-red);
+    box-shadow: 0 8px 20px rgba(226,55,68,0.3); transform: translateY(-4px);
+}
+/* 🟢 Mild */
+.z-spice-btn[data-spice="Mild"].active {
+    background: rgba(46,204,113,0.15); border-color: #2ecc71; color: #2ecc71;
+    box-shadow: 0 8px 20px rgba(46,204,113,0.3);
+}
+/* 🟡 Medium */
+.z-spice-btn[data-spice="Medium"].active {
+    background: rgba(241,196,15,0.15); border-color: #f1c40f; color: #f1c40f;
+    box-shadow: 0 8px 20px rgba(241,196,15,0.3);
+}
+/* 🔴 Extra Spicy (stored in the order as "Fire" so the Admin Panel keeps working) */
+.z-spice-btn[data-spice="Fire"].active {
+    background: rgba(226,55,68,0.18); border-color: #e23744; color: #ff5a67;
+    box-shadow: 0 8px 20px rgba(226,55,68,0.4);
+}
+/* Portion / size buttons are gold */
+.z-spice-btn[data-size].active {
+    background: rgba(212,175,55,0.18); border-color: var(--z-gold); color: var(--z-gold);
+    box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+}
+
+/* 3D Coin Celebration Popup (Extreme Depth) */
+.z-celeb-card {
+    background: linear-gradient(145deg, rgba(25,25,25,0.98), rgba(10,10,10,0.98));
+    border: 1px solid rgba(212,175,55,0.6); padding: 45px 35px; border-radius: 32px;
+    text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,1), inset 0 2px 0 rgba(255,255,255,0.15);
+}
+.z-bounce { animation: bounceInPro 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes bounceInPro {
+    0% { transform: scale(0.4) rotate(-5deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.z-coin-3d {
+    font-size: 75px; color: var(--z-gold);
+    text-shadow: 0 15px 30px rgba(0,0,0,0.9);
+    animation: floatCoinPro 2.5s infinite ease-in-out;
+}
+@keyframes floatCoinPro {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-15px) scale(1.05); }
+}
+.z-celeb-title { color: #fff; font-weight: 900; font-size: 32px; margin: 18px 0 8px; letter-spacing: -1px; }
+.z-celeb-text { color: #ccc; font-size: 15px; font-weight: 600; }
+
+/* --- 7. APPLE-STYLE TOAST QUEUE SYSTEM --- */
+#toast-container {
+    position: fixed; top: -120px; left: 50%; transform: translateX(-50%);
+    background: rgba(25,25,25,0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.2); padding: 16px 30px; border-radius: 40px;
+    font-size: 14px; font-weight: 700; z-index: 999999; display: flex; align-items: center; gap: 12px;
+    transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    max-width: 92vw;
+}
+#toast-container.show { top: 45px; }
+
+/* --- 8. CINEMATIC DINING CANVAS (Parallax Feel) --- */
+.z-dining-canvas {
+    height: 400px; background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1000&q=80') center/cover fixed;
+    position: relative; display: flex; justify-content: center; align-items: center;
+}
+.z-dining-overlay {
+    position: absolute; top:0; left:0; width:100%; height:100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, var(--z-bg) 100%);
+}
+.z-dining-text { position: relative; z-index: 2; text-align: center; }
+.z-dining-text p { color: #ddd; font-size: 16px; font-weight: 600; letter-spacing: 1.5px; margin-top: 8px; text-transform: uppercase; }
+
+/* --- 9. BUTTONS (Heavy Gradients & Depths) --- */
+.z-gold-btn {
+    width: 100%; background: linear-gradient(135deg, var(--z-gold), #ffd700, #ffb300);
+    color: #000; border: none; padding: 18px; border-radius: 16px; font-size: 17px; font-weight: 900;
+    box-shadow: 0 10px 30px rgba(212,175,55,0.5); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+}
+.z-gold-btn:active { transform: scale(0.95); box-shadow: 0 5px 15px rgba(212,175,55,0.5); }
+.z-gold-btn:disabled, .z-primary-btn:disabled { opacity: 0.6; cursor: wait; }
+
+.z-primary-btn {
+    width: 100%; background: linear-gradient(135deg, var(--z-red), var(--z-dark-red));
+    color: #fff; font-weight: 800; padding: 18px; border: none; border-radius: 16px; font-size: 17px;
+    cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 10px 30px rgba(226,55,68,0.4);
+}
+.z-primary-btn:active { transform: scale(0.95); box-shadow: 0 5px 15px rgba(226,55,68,0.4); }
+
+.z-input {
+    width: 100%; background: #151515; color: #fff; padding: 18px; border: 1px solid #333;
+    border-radius: 14px; margin-bottom: 18px; font-size: 15px; outline: none; font-weight: 500;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.z-input:focus { border-color: var(--z-red); box-shadow: 0 0 15px rgba(226,55,68,0.2); }
+
+
+/* ==========================================================
+   🔥 SLIDER BANNERS & WATERMARK
+   ========================================================== */
+
+/* --- PREMIUM SLIDER BANNERS --- */
+#banner-1 { background: linear-gradient(135deg, #e52d27 0%, #b31217 100%); }
+#banner-2 { background: linear-gradient(135deg, #4b134f 0%, #c94b4b 100%); }
+#banner-3 { background: linear-gradient(135deg, #111 0%, #2a2a2a 100%); border: 1px solid var(--z-gold); }
+
+.hidden-slide { display: none; }
+.banner-content { position: relative; z-index: 2; }
+
+/* --- "POWERED BY LEGEND" WATERMARK --- */
+.legend-watermark-container {
+    text-align: center;
+    padding: 30px 20px 80px 20px;
+}
+.legend-watermark-box {
+    display: inline-block;
+    padding: 10px 20px;
+    background: linear-gradient(145deg, #0f172a, #1e293b);
+    border-radius: 50px;
+    border: 1px solid #3b82f6;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+.legend-watermark-text {
+    color: #60a5fa;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.legend-bolt-icon {
+    color: #fbbf24;
+    margin-right: 5px;
+}
+.legend-brand-name {
+    color: #fff;
+    font-weight: 900;
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.8);
+}
+
+/* --- Respect phones that have "reduce motion" turned on --- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+        }
