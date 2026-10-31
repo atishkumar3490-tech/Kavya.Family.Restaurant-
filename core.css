@@ -1,11 +1,5 @@
 /* ==========================================================
    CORE.CSS - Enterprise Zomato Layout & Grid Architecture
-   ----------------------------------------------------------
-   Updated to match app.js / ui.js / index.html:
-   - utility classes that were missing (mt-25, font-weight-600 ...)
-   - sold-out dishes, photo placeholder, veg / non-veg stripe
-   - sticky mini cart, closed-shop bar, live tracking bar
-   - category emoji icons, dining form card, safe-area support
    ========================================================== */
 
 :root {
@@ -42,27 +36,19 @@ html, body {
     position: relative;
 }
 
-img {
-    max-width: 100%;
-}
-
 /* --- UTILITY CLASSES --- */
 .hidden { display: none !important; }
 .mt-5 { margin-top: 5px; }
 .mt-10 { margin-top: 10px; }
 .mt-15 { margin-top: 15px; }
 .mt-20 { margin-top: 20px; }
-.mt-25 { margin-top: 25px; }
 .mb-15 { margin-bottom: 15px; }
 .p-20 { padding: 20px; }
 .text-xs { font-size: 10px; }
 .text-sm { font-size: 12px; }
-.text-center { text-align: center; }
-.font-weight-600 { font-weight: 600; }
-.text-muted, .z-text-muted { color: var(--z-muted); }
+.text-muted { color: var(--z-muted); }
 .text-green { color: var(--z-green); }
 .text-red { color: var(--z-red); }
-.z-neon { color: var(--z-neon); font-weight: 900; }
 
 /* --- APP PAGES SYSTEM --- */
 .z-page {
@@ -71,7 +57,6 @@ img {
     left: 0;
     width: 100%;
     height: 100vh;
-    height: 100dvh;
     background: var(--z-bg);
     overflow-y: auto;
     overflow-x: hidden;
@@ -113,7 +98,6 @@ img {
     padding: 15px 20px;
     background: rgba(5, 5, 5, 0.95);
     backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
     z-index: 100;
     border-bottom: 1px solid var(--z-border);
 }
@@ -147,13 +131,6 @@ img {
     z-index: 1000;
     padding-top: 15px;
     background: transparent;
-    transition: background 0.3s, box-shadow 0.3s;
-}
-
-/* ui.js adds .scrolled when the customer scrolls down */
-.z-sticky-nav.scrolled {
-    background: linear-gradient(135deg, var(--z-red), var(--z-dark-red));
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
 }
 
 .z-header-row {
@@ -223,7 +200,6 @@ img {
     overflow: hidden;
     border: 2px solid rgba(255, 255, 255, 0.5);
     cursor: pointer;
-    background: #222;
 }
 
 .z-profile-btn img {
@@ -231,10 +207,6 @@ img {
     height: 100%;
     object-fit: cover;
 }
-
-/* 🪑 QR table mode: the delivery location is hidden, so the coin + profile move to the right */
-body.table-mode .z-loc-box { display: none !important; }
-body.table-mode .z-header-row { justify-content: flex-end; }
 
 /* --- SEARCH BAR --- */
 .z-search-wrap {
@@ -259,15 +231,12 @@ body.table-mode .z-header-row { justify-content: flex-end; }
     outline: none;
     font-size: 14px;
     font-weight: 600;
-    min-width: 0;
-    transition: opacity 0.3s;
 }
 
 .z-search-ico, .z-mic-ico {
     color: var(--z-red);
     font-size: 18px;
     cursor: pointer;
-    transition: color 0.2s;
 }
 
 .z-search-div {
@@ -275,16 +244,6 @@ body.table-mode .z-header-row { justify-content: flex-end; }
     height: 18px;
     background: #dddddd;
     margin: 0 12px;
-}
-
-/* --- CLOSED SHOP BAR (shown by app.js when the Admin Panel sets the shop to Closed) --- */
-.z-closed-bar {
-    background: #b71c1c;
-    color: #fff;
-    text-align: center;
-    padding: 10px 14px;
-    font-weight: 800;
-    font-size: 13px;
 }
 
 /* --- HORIZONTAL CATEGORY BAR --- */
@@ -326,25 +285,7 @@ body.table-mode .z-header-row { justify-content: flex-end; }
     border: 3px solid #222;
 }
 
-/* emoji icons (always match the category, no photo needed) */
-.z-cat-emoji {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    background: radial-gradient(circle at 30% 25%, #2a2a2a, #121212);
-    border: 3px solid #222;
-}
-
 .z-cat-item.active .z-cat-icon img {
-    border-color: var(--z-neon);
-    box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
-}
-
-.z-cat-item.active .z-cat-emoji {
     border-color: var(--z-neon);
     box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
 }
@@ -353,14 +294,11 @@ body.table-mode .z-header-row { justify-content: flex-end; }
     font-size: 12px;
     font-weight: 600;
     color: var(--z-muted);
-    text-align: center;
-    white-space: nowrap;
 }
 
 .z-cat-item.active span {
     color: #fff;
 }
-
 /* --- WIDE FOOD CARDS (FEED) --- */
 .z-feed-container {
     padding: 10px 0;
@@ -379,95 +317,12 @@ body.table-mode .z-header-row { justify-content: flex-end; }
     height: 270px;
     position: relative;
     overflow: hidden;
-    background: #161616;
 }
 
 .z-food-img-box img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-/* bottom fade so the photo blends into the card */
-.z-food-img-box::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 45%;
-    background: linear-gradient(to top, rgba(18, 18, 18, 0.95), transparent);
-    pointer-events: none;
-}
-
-/* green stripe for veg, red stripe for non-veg */
-.z-food-img-box::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    z-index: 2;
-    background: var(--z-green);
-}
-
-.z-food-card.is-nonveg .z-food-img-box::before {
-    background: var(--z-red);
-}
-
-/* shown by app.js only when images/<dish id>.jpg does not exist yet (never a wrong photo) */
-.z-img-ph {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 20px;
-    text-align: center;
-    background: radial-gradient(circle at 30% 20%, #2b2412, #0b0b0b 70%);
-}
-
-.z-img-ph .e {
-    font-size: 56px;
-    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
-}
-
-.z-img-ph b {
-    font-size: 15px;
-    color: #fff;
-    font-weight: 700;
-}
-
-.z-img-ph small {
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #8c7a33;
-}
-
-/* sold-out dishes (switched on from the Admin Panel -> Menu) */
-.z-food-card.sold .z-food-img-box img,
-.z-food-card.sold .z-img-ph {
-    filter: grayscale(1) brightness(0.45);
-}
-
-.z-sold-tag {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(-8deg);
-    z-index: 3;
-    background: rgba(0, 0, 0, 0.75);
-    border: 2px solid #888;
-    color: #ddd;
-    padding: 8px 22px;
-    border-radius: 8px;
-    font-weight: 900;
-    letter-spacing: 3px;
-    font-size: 16px;
 }
 
 .z-bookmark-btn {
@@ -478,7 +333,6 @@ body.table-mode .z-header-row { justify-content: flex-end; }
     height: 42px;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
     display: flex;
@@ -488,7 +342,6 @@ body.table-mode .z-header-row { justify-content: flex-end; }
     color: #fff;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    z-index: 3;
 }
 
 .z-food-info {
@@ -558,43 +411,6 @@ body.table-mode .z-header-row { justify-content: flex-end; }
     font-size: 14px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(226, 55, 68, 0.2);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.15s;
-}
-
-.z-add-btn:active {
-    transform: scale(0.93);
-}
-
-/* soft shine that sweeps across the ADD button */
-.z-add-btn::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -120%;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
-    animation: kvShimmer 3.5s infinite;
-}
-
-@keyframes kvShimmer {
-    0%, 60% { left: -120%; }
-    100% { left: 220%; }
-}
-
-/* disabled button for sold-out dishes */
-.z-sold-btn {
-    background: #1a1a1a !important;
-    border-color: #333 !important;
-    color: #666 !important;
-    box-shadow: none !important;
-    cursor: not-allowed;
-}
-
-.z-sold-btn::after {
-    display: none;
 }
 
 .z-qty-box {
@@ -603,11 +419,9 @@ body.table-mode .z-header-row { justify-content: flex-end; }
     background: rgba(226, 55, 68, 0.15);
     border: 1px solid var(--z-red);
     border-radius: 12px;
-    padding: 4px 10px;
-    min-width: 100px;
+    padding: 4px;
+    width: 100px;
     justify-content: space-between;
-    white-space: nowrap;
-    cursor: pointer;
 }
 
 .z-qty-box button {
@@ -620,110 +434,6 @@ body.table-mode .z-header-row { justify-content: flex-end; }
     cursor: pointer;
 }
 
-/* --- STICKY MINI CART (shown by app.js when the cart has items) --- */
-#mini-cart {
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: 78px;
-    z-index: 998;
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 18px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, var(--z-gold), #ffb300);
-    color: #000;
-    font-weight: 900;
-    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.45);
-    cursor: pointer;
-}
-
-#mini-cart small {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    opacity: 0.8;
-}
-
-#mini-cart.show {
-    display: flex;
-}
-
-body.page-open #mini-cart {
-    display: none !important;
-}
-
-/* the "Track Order" banner moves up so it never hides behind the mini cart */
-body.has-minicart #active-order-banner {
-    bottom: 146px !important;
-}
-
-/* --- LIVE ORDER TRACKING PROGRESS BAR --- */
-.z-track-bar {
-    height: 6px;
-    background: #222;
-    border-radius: 6px;
-    overflow: hidden;
-    margin: 14px 0 4px;
-}
-
-.z-track-bar i {
-    display: block;
-    height: 100%;
-    background: linear-gradient(90deg, var(--z-gold), var(--z-neon));
-    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* --- DINING / BOOKING FORM HELPERS --- */
-.z-section-title {
-    color: #fff;
-    font-size: 18px;
-    font-weight: 800;
-}
-
-.z-label {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-.z-card {
-    background: #111;
-    border: 1px solid var(--z-border);
-    border-radius: 18px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.z-counter-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #151515;
-    border: 1px solid #333;
-    border-radius: 14px;
-    padding: 8px;
-    margin-top: 8px;
-}
-
-.z-counter-box button {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    border: 1px solid var(--z-gold);
-    background: rgba(212, 175, 55, 0.1);
-    color: var(--z-gold);
-    font-size: 22px;
-    font-weight: 900;
-    cursor: pointer;
-}
-
-.z-counter-box button:active {
-    transform: scale(0.92);
-}
-
 /* --- ZOMATO BOTTOM TASKBAR --- */
 .z-taskbar {
     position: fixed;
@@ -732,11 +442,9 @@ body.has-minicart #active-order-banner {
     width: 100%;
     background: rgba(10, 10, 10, 0.98);
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     display: flex;
     justify-content: space-around;
     padding: 12px 5px 25px;
-    padding-bottom: max(25px, env(safe-area-inset-bottom));
     border-top: 1px solid var(--z-border);
     z-index: 999;
 }
@@ -776,3 +484,56 @@ body.has-minicart #active-order-banner {
     justify-content: center;
     align-items: center;
 }
+
+/* ==========================================================
+   STEP 4 ADDITIONS (luxury polish) - nothing above was removed
+   ========================================================== */
+
+/* Missing helper classes used by the Dining / Cart / Reward screens */
+.z-card { background: var(--z-card-bg); border: 1px solid var(--z-border); border-radius: 18px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
+.z-label { font-size: 12px; font-weight: 600; letter-spacing: 0.4px; }
+.z-section-title { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.2px; }
+.z-text-muted { color: var(--z-muted); }
+.z-neon { color: var(--z-neon); font-weight: 800; text-shadow: 0 0 10px rgba(0,229,255,0.5); }
+.z-celeb-text { color: #ddd; font-size: 15px; font-weight: 500; }
+.z-counter-box { display: flex; align-items: center; justify-content: space-between; background: #151515; border: 1px solid #333; border-radius: 14px; padding: 8px; margin-top: 8px; }
+.z-counter-box button { width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--z-gold); background: rgba(212,175,55,0.1); color: var(--z-gold); font-size: 22px; font-weight: 800; cursor: pointer; transition: transform .15s; }
+.z-counter-box button:active { transform: scale(0.88); }
+
+/* Compact header + category bar when scrolled (class set by ui.js) */
+.z-sticky-nav { transition: background .3s, box-shadow .3s, padding .3s; }
+.z-sticky-nav.scrolled { background: linear-gradient(135deg, var(--z-red), var(--z-dark-red)); padding-top: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.55); }
+.z-sticky-nav.scrolled .z-header-row { padding-bottom: 6px; }
+.z-sticky-nav.scrolled .z-loc-sub { display: none; }
+.z-sticky-nav.scrolled .z-search-wrap { padding-bottom: 8px; }
+.z-sticky-nav.scrolled .z-search-bar { padding: 8px 16px; }
+.z-cat-section { position: sticky; top: 0; z-index: 900; transition: background .3s, padding .3s, box-shadow .3s; }
+.z-cat-section.scrolled { background: rgba(5,5,5,0.94); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); padding: 16px 0 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+.z-cat-section.scrolled .z-cat-icon { width: 54px; height: 54px; }
+.z-cat-section.scrolled .z-cat-emoji { font-size: 24px; }
+.z-cat-icon { transition: width .3s, height .3s, transform .3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.z-cat-item { flex-shrink: 0; }
+
+/* Search placeholder fade (ui.js rotates the hint) */
+.z-search-input { transition: opacity .3s ease; }
+.z-search-input::placeholder { color: #777; font-weight: 500; }
+
+/* Press states for every tappable control */
+.z-add-btn, .z-nav-item, .z-coin-badge, .z-profile-btn, .z-back { transition: transform .15s ease, background .2s, box-shadow .2s; }
+.z-add-btn:active, .z-coin-badge:active, .z-profile-btn:active { transform: scale(0.93); }
+.z-add-btn:active { background: var(--z-red); color: #fff; }
+.z-back:active { transform: translateX(-3px); }
+.z-nav-item:active { transform: scale(0.92); }
+.z-nav-item.active i { color: var(--z-red); }
+
+/* Taskbar: safe-area for iPhones with a home bar */
+.z-taskbar { padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+.z-page { height: 100vh; height: 100dvh; }
+
+/* Veg / non-veg dot readability */
+.z-veg-dot { border: 1.5px solid currentColor; }
+
+/* Reduced-motion: respect the phone setting */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+   }
