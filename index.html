@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Kavya Family Restaurant - Ultimate Zomato Clone</title>
-    
+    <title>Kavya Family Restaurant - Order Online & Dine-in</title>
+    <meta name="description" content="Order biryani, rolls, chowmein, paneer, chicken curries and tandoori breads from Kavya Family Restaurant, Patna. Home delivery and table ordering.">
+    <meta name="theme-color" content="#050505">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <link rel="stylesheet" href="core.css">
     <link rel="stylesheet" href="premium.css">
 </head>
@@ -21,7 +28,7 @@
         </div>
     </div>
 
-    <div id="toast-container" class="z-toast-hidden">
+    <div id="toast-container" class="z-toast-hidden" role="status" aria-live="polite">
         <i id="toast-icon" class="fa-solid fa-circle-check"></i>
         <span id="toast-message">Notification</span>
     </div>
@@ -35,20 +42,7 @@
         </div>
     </div>
 
-    <div id="flavor-slider-modal" class="z-overlay hidden">
-        <div class="z-bottom-sheet z-slide-up">
-            <div class="z-sheet-handle"></div>
-            <h3 class="z-sheet-title">Customize Flavor</h3>
-            <p class="z-text-muted text-sm mb-15">Select spice level for your dish.</p>
-            <div class="z-spice-grid">
-                <div class="z-spice-btn active" onclick="setSpice(this, 'Mild')">Mild 🌿</div>
-                <div class="z-spice-btn" onclick="setSpice(this, 'Medium')">Medium 🌶️</div>
-                <div class="z-spice-btn" onclick="setSpice(this, 'Fire')">Fire 🔥</div>
-            </div>
-            <button id="confirm-flavor-btn" class="z-primary-btn mt-20">Confirm & Add</button>
-        </div>
-    </div>
-
+    <!-- The spice / size popup is built by app.js (only dishes flagged needsSpice in data.js show spice levels). -->
 
     <div id="home-page" class="z-page active-page">
         <div class="z-red-header-zone">
@@ -66,7 +60,7 @@
                             <i class="fa-solid fa-coins"></i> <span id="top-coin-bal">50</span>
                         </div>
                         <div class="z-profile-btn" onclick="openPage('login-page')">
-                            <img id="nav-profile-pic" src="https://via.placeholder.com/150/222/fff?text=L" alt="Profile">
+                            <img id="nav-profile-pic" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23222'/%3E%3Ctext x='20' y='27' font-size='18' text-anchor='middle' fill='%23fff' font-family='Arial'%3EL%3C/text%3E%3C/svg%3E" alt="Profile">
                         </div>
                     </div>
                 </div>
@@ -74,9 +68,9 @@
                 <div class="z-search-wrap">
                     <div class="z-search-bar">
                         <i class="fa-solid fa-magnifying-glass z-search-ico"></i>
-                        <input type="text" id="main-search" class="z-search-input" placeholder="Search 'Chicken Biryani'..." onkeyup="filterMenu()">
+                        <input type="text" id="main-search" class="z-search-input" placeholder="Search 'Chicken Biryani'..." oninput="filterMenu()" autocomplete="off">
                         <div class="z-search-div"></div>
-                        <i class="fa-solid fa-microphone z-mic-ico" onclick="showToast('Listening for voice search...')"></i>
+                        <i class="fa-solid fa-microphone z-mic-ico" onclick="showToast('Voice search is coming soon!')"></i>
                     </div>
                 </div>
             </header>
@@ -106,27 +100,27 @@
                     </div>
                 </div>
             </div>
-            
-        </div> 
 
-        <div class="z-cat-section">
+        </div>
+
+        <div class="z-cat-section" id="category-menu">
             <div class="z-cat-scroll" id="category-scroll-container">
                 </div>
         </div>
 
         <main class="z-feed-container" id="menu-items-container">
             </main>
-        
+
         <div class="legend-watermark-container">
             <div class="legend-watermark-box">
                 <span class="legend-watermark-text">
                     <i class="fa-solid fa-bolt legend-bolt-icon"></i>
-                    Powered by <strong class="legend-brand-name">LEGEND</strong> 
+                    Powered by <strong class="legend-brand-name">LEGEND</strong>
                 </span>
             </div>
         </div>
-        
-    </div> 
+
+    </div>
 
 
     <div id="dining-page" class="z-page right-slide-page">
@@ -135,7 +129,7 @@
             <h2>Dining & Table Booking</h2>
             <div style="width: 24px;"></div>
         </header>
-        
+
         <div class="z-scroll-content">
             <div class="z-dining-canvas">
                 <div class="z-dining-overlay"></div>
@@ -144,7 +138,7 @@
                     <p>Extra ₹175 OFF on first booking</p>
                 </div>
             </div>
-            
+
             <div class="z-dining-body">
                 <h4 class="z-section-title" style="padding: 20px;">Reserve a Table</h4>
                 <div class="z-card" style="margin: 0 20px;">
@@ -154,11 +148,11 @@
                         <span id="guest-count" style="color:#fff; font-weight:800; font-size:18px;">2 Guests</span>
                         <button onclick="updateGuests(1)">+</button>
                     </div>
-                    
+
                     <label class="z-label text-muted mt-15" style="display:block;">Select Time Slot</label>
                     <input type="time" class="z-input mt-5" value="19:30">
-                    
-                    <<button class="z-gold-btn mt-20" onclick="reserveTable()">Confirm Reservation</button>
+
+                    <button class="z-gold-btn mt-20" onclick="reserveTable(this)">Confirm Reservation</button>
                 </div>
             </div>
         </div>
@@ -171,7 +165,7 @@
             <h2>Secure Checkout</h2>
             <div style="width: 24px;"></div>
         </header>
-        
+
         <div class="z-scroll-content p-20" id="cart-items-container">
             </div>
     </div>
@@ -183,7 +177,7 @@
             <h2>VIP Portal</h2>
             <div style="width: 24px;"></div>
         </header>
-        
+
         <div class="z-scroll-content p-20" id="auth-container">
             </div>
     </div>
@@ -210,4 +204,4 @@
     <script src="app.js"></script>
 
 </body>
-    </html>
+</html>
